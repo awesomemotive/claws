@@ -115,13 +115,22 @@ namespace Sandhills {
 		private $current_clause;
 
 		/**
+		 * Represents the current field(s) being worked with.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 */
+		private $current_field;
+
+		/**
 		 * Represents the current input value(s).
 		 *
 		 * @access private
 		 * @since  1.0.0
 		 * @var    mixed
 		 */
-		private $current_input;
+		private $current_value;
 
 		/**
 		 * Whitelist of clauses Sidecar is built to handle.
