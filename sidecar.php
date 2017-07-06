@@ -38,6 +38,101 @@ namespace Sandhills {
 		private $wpdb;
 
 		/**
+		 * The running SELECT clause for the current instance.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 *
+		 * @see Sidecar::clause()
+		 */
+		private $select_clause = '*';
+
+		/**
+		 * The running WHERE clause for the current instance.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 *
+		 * @see Sidecar::clause()
+		 */
+		private $where_clause = '';
+
+		/**
+		 * The running JOIN clause for the current instance.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 *
+		 * @see Sidecar::clause()
+		 */
+		private $join_clause = '';
+
+		/**
+		 * The running ORDERBY clause for the current instance.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 *
+		 * @see Sidecar::clause()
+		 */
+		private $orderby_clause = '';
+
+		/**
+		 * The running ORDER clause for the current instance.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 *
+		 * @see Sidecar::clause()
+		 */
+		private $order_clause = '';
+
+		/**
+		 * The running COUNT clause for the current instance.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 *
+		 * @see Sidecar::clause()
+		 */
+		private $count_clause = '';
+
+		/**
+		 * Represents the current clause being worked with.
+		 *
+		 * Resets at the end of escape_input().
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 */
+		private $current_clause;
+
+		/**
+		 * Represents the current input value(s).
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    mixed
+		 */
+		private $current_input;
+
+		/**
+		 * Whitelist of clauses Sidecar is built to handle.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    array
+		 */
+		private $allowed_clauses = array( 'select', 'where', 'join', 'orderby', 'order', 'count' );
+
+		/**
 		 * Sets up and retrieves the Sidecar instance.
 		 *
 		 * @access public
