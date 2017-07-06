@@ -46,6 +46,19 @@ namespace Sandhills {
 			return self::$instance;
 		}
 
+		/**
+		 * Retrieves the current Sidecar version.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @return string
+		 */
+		public function version() {
+			return $this->version;
+		}
+
+
 	}
 }
 
