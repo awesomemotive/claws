@@ -35,7 +35,7 @@ namespace Sandhills {
 		 * @since  1.0.0
 		 * @static
 		 *
-		 * @return \Sandhills\Sidecar
+		 * @return \Sandhills\Sidecar Sidecar instance.
 		 */
 		public static function instance() {
 
