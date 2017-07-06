@@ -194,7 +194,7 @@ namespace Sandhills {
 		 * @since  1.0.0
 		 *
 		 * @param string $type Clause type.
-		 * @return Sidecar Current Sidecar instance.
+		 * @return Sidecar $this Current Sidecar instance.
 		 */
 		public function clause( $type ) {
 			$type = strtolower( $type );
@@ -207,16 +207,90 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Resets "current" props.
+		 * Sets the current field for manipulation and returns the current instance.
 		 *
-		 * @access protected
+		 * @access public
 		 * @since  1.0.0
+		 *
+		 * @param string $field Field to use.
+		 * @return Sidecar $this Current Sidecar instance.
 		 */
-		protected function reset() {
-			unset( $this->current_clause );
-			unset( $this->current_input );
+		public function field( $field ) {
+			$this->current_field = $field;
+
+			return $this;
 		}
 
+		/**
+		 * Sanitizes values for the clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string|int|array $values   Value(s) as a string, integer, or array.
+		 * @param string           $callback Optional. Callback to use against the value(s). Default 'intval'.
+		 * @param string           $clause   Optional. Clause to append the sanitized values against.
+		 *                                   Default empty (current clause).
+		 * @return string|\WP_Error SQL for the current clause, otherwise a WP_Error object.
+		 */
+		public function values( $values, $callback = 'intval', $clause = '' ) {
+			if ( empty( $callback ) || ! is_callable( $callback ) ) {
+				$callback = 'intval';
+			}
+
+			if ( is_array( $values ) ) {
+				$this->current_value = array_map( $callback, $values );
+			} else {
+				$this->current_value = call_user_func( $callback, $values );
+			}
+
+			return $this->get_clause( $clause );
+		}
+
+		/**
+		 * Retrieves the SQL for the given clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $clause Optional. Clause to retrieve built SQL for. Default empty (current clause).
+		 * @return string|\WP_Error SQL for the current clause, otherwise a WP_Error object.
+		 */
+		public function get_clause( $clause = '' ) {
+			if ( ! empty( $clause ) ) {
+				$clause = strtolower( $clause );
+
+				if ( in_array( $clause, $this->allowed_clauses, true ) && $clause !== $this->current_clause ) {
+					$this->current_clause = $clause;
+				}
+			}
+
+			return $this->build_clause();
+		}
+
+		/**
+		 * Retrieves the raw, sanitize SQL for the current clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @return string|\WP_Error SQL for the current clause, otherwise a WP_Error object.
+		 */
+		public function build_clause() {
+			if ( ! isset( $this->current_clause ) ) {
+				return new \WP_Error( 'sidecar_invalid_clause', 'A clause must be specified to build against.' );
+			}
+
+			// TODO Add handling for non field clauses.
+			if ( ! isset( $this->current_field ) ) {
+				return new \WP_Error( 'sidecar_invalid_field', 'A field must be specified to build the clause against.' );
+			}
+
+			if ( ! isset( $this->current_value ) ) {
+				return new \WP_Error( 'sidecar_invalid_values', 'A value or values must be specified to build the clause against.' );
+			}
+
+		}
 	}
 }
 
