@@ -29,6 +29,15 @@ namespace Sandhills {
 		private $version = '1.0.0';
 
 		/**
+		 * Holds the wpdb global instance.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    \wpdb
+		 */
+		private $wpdb;
+
+		/**
 		 * Sets up and retrieves the Sidecar instance.
 		 *
 		 * @access public
@@ -41,9 +50,25 @@ namespace Sandhills {
 
 			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Sidecar ) ) {
 				self::$instance = new Sidecar;
+
+				self::$instance->setup();
 			}
 
 			return self::$instance;
+		}
+
+		/**
+		 * Sets up needed values.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 */
+		private function setup() {
+			global $wpdb;
+
+			if ( $wpdb instanceof \wpdb ) {
+				$this->wpdb = $wpdb;
+			}
 		}
 
 		/**
