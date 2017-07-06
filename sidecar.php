@@ -83,17 +83,50 @@ namespace Sandhills {
 			return $this->version;
 		}
 
+		/**
+		 * Sets the current clause for manipulation and returns the current instance.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $type Clause type.
+		 * @return Sidecar Current Sidecar instance.
+		 */
+		public function clause( $type ) {
+			$type = strtolower( $type );
+
+			if ( in_array( $type, $this->allowed_clauses, true ) ) {
+				$this->current_clause = $type;
+			}
+
+			return $this;
+		}
+
+		/**
+		 * Resets "current" props.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 */
+		protected function reset() {
+			unset( $this->current_clause );
+			unset( $this->current_input );
+		}
 
 	}
 }
 
-/**
- * Shorthand helper for retrieving the Sidecar instance.
- *
- * @since 1.0.0
- *
- * @return \Sandhills\Sidecar Sidecar instance.
- */
-function sidecar() {
-	return \Sandhills\Sidecar::instance();
+namespace {
+
+	/**
+	 * Shorthand helper for retrieving the Sidecar instance.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return \Sandhills\Sidecar Sidecar instance.
+	 */
+	function sidecar() {
+		return \Sandhills\Sidecar::instance();
+	}
+
 }
