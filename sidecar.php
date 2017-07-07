@@ -534,7 +534,22 @@ namespace Sandhills {
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
 		public function in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			// TODO: Handle as equals() when $values is single.
+			$current_clause = $this->get_current_clause();
+			$current_field  = $this->get_current_field();
+
+			if ( ! is_array( $values ) ) {
+				$this->equals( $values, $callback_or_type, $operator );
+			} else {
+				$callback = $this->get_callback( $callback_or_type );
+
+				// Escape values.
+				$values = implode( ', ', array_map( $callback, $values ) );
+
+				$sql = "{$current_field} IN( {$values} )";
+
+				$this->clauses_in_progress[ $current_clause ][] = $sql;
+			}
+
 			return $this;
 		}
 
@@ -552,6 +567,22 @@ namespace Sandhills {
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
 		public function not_in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+			$current_clause = $this->get_current_clause();
+			$current_field  = $this->get_current_field();
+
+			if ( ! is_array( $values ) ) {
+				$this->doesnt_equal( $values, $callback_or_type, $operator );
+			} else {
+				$callback = $this->get_callback( $callback_or_type );
+
+				// Escape values.
+				$values = implode( ', ', array_map( $callback, $values ) );
+
+				$sql = "{$current_field} NOT IN( {$values} )";
+
+				$this->clauses_in_progress[ $current_clause ][] = $sql;
+			}
+
 			return $this;
 		}
 
