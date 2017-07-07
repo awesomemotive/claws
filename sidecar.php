@@ -534,6 +534,7 @@ namespace Sandhills {
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
 		public function in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+			// TODO: Handle as equals() when $values is single.
 			return $this;
 		}
 
