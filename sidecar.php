@@ -133,6 +133,15 @@ namespace Sandhills {
 		private $current_value;
 
 		/**
+		 * Stores clauses in progress for retrieval.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    array
+		 */
+		private $clauses_in_progress = array();
+
+		/**
 		 * Whitelist of clauses Sidecar is built to handle.
 		 *
 		 * @access private
@@ -140,6 +149,18 @@ namespace Sandhills {
 		 * @var    array
 		 */
 		private $allowed_clauses = array( 'select', 'where', 'join', 'orderby', 'order', 'count' );
+
+		/**
+		 * Whitelist of allowed comparison operators.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 * @var    array
+		 */
+		private $allowed_compares = array(
+			'=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN',
+			'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'EXISTS', 'NOT EXISTS'
+		);
 
 		/**
 		 * Sets up and retrieves the Sidecar instance.
