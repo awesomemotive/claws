@@ -547,17 +547,14 @@ namespace Sandhills {
 		 */
 		public function in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
-			$current_field  = $this->get_current_field();
 
 			if ( ! is_array( $values ) ) {
+
 				$this->equals( $values, $callback_or_type, $operator );
+
 			} else {
-				$callback = $this->get_callback( $callback_or_type );
 
-				// Escape values.
-				$values = implode( ', ', array_map( $callback, $values ) );
-
-				$sql = "{$current_field} IN( {$values} )";
+				$sql = $this->get_in_sql( $values, $callback_or_type, 'IN' );
 
 				$this->clauses_in_progress[ $current_clause ][] = $sql;
 			}
@@ -580,22 +577,49 @@ namespace Sandhills {
 		 */
 		public function not_in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
-			$current_field  = $this->get_current_field();
 
 			if ( ! is_array( $values ) ) {
+
 				$this->doesnt_equal( $values, $callback_or_type, $operator );
+
 			} else {
-				$callback = $this->get_callback( $callback_or_type );
 
-				// Escape values.
-				$values = implode( ', ', array_map( $callback, $values ) );
-
-				$sql = "{$current_field} NOT IN( {$values} )";
+				$sql = $this->get_in_sql( $values, $callback_or_type, 'NOT IN' );
 
 				$this->clauses_in_progress[ $current_clause ][] = $sql;
 			}
 
 			return $this;
+		}
+
+		/**
+		 * Helper used by 'in' comparison methods to build SQL.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 *
+		 * @param array           $values           Array of values to compare.
+		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks.
+		 * @param string $compare Comparison to make. Accepts 'IN' or 'NOT IN'.
+		 * @return string Raw, sanitized SQL.
+		 */
+		protected function get_in_sql( $values, $callback_or_type, $compare ) {
+			$current_field  = $this->get_current_field();
+
+			$callback = $this->get_callback( $callback_or_type );
+			$compare  = strtoupper( $compare );
+
+			if ( ! in_array( $compare, array( 'IN', 'NOT IN' ) ) ) {
+				$compare = 'IN';
+			}
+
+			// Escape values.
+			$values = implode( ', ', array_map( $callback, $values ) );
+
+			$sql = "{$current_field} {$compare}( {$values} )";
+
+			return $sql;
 		}
 
 		/**
@@ -652,7 +676,7 @@ namespace Sandhills {
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks.
 		 * @param string $compare Comparison to make. Accepts '=' or '
-		 * @param $operator
+		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_between_sql( $values, $callback_or_type, $compare ) {
 			// Bail if `$values` isn't an array or there aren't at least two values.
@@ -799,7 +823,7 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		public function get_sql( $clause = '' ) {
-			$sql            = '';
+			$sql = '';
 
 			if ( empty( $clause ) ) {
 				$clause = $this->get_current_clause();
