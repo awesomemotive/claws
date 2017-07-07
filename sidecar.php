@@ -276,31 +276,33 @@ namespace Sandhills {
 			if ( isset( $compare ) && isset( $values ) ) {
 				switch( $compare ) {
 					case '!=':
-						$this->doesnt_equal( $values );
+						return $this->doesnt_equal( $values );
 						break;
 
 					case '<':
-						$this->lt( $values );
+						return $this->lt( $values );
 						breal;
 
 					case '>':
-						$this->gt( $values );
+						return $this->gt( $values );
 						break;
 
 					case '<=':
-						$this->lte( $values );
+						return $this->lte( $values );
 						break;
 
 					case '>=':
-						$this->gte( $values );
+						return $this->gte( $values );
 						break;
 
 					case '=':
 					default:
-						$this->equals( $values );
+						return $this->equals( $values );
 						break;
 				}
 			}
+
+			return $this;
 		}
 
 		/**
