@@ -92,99 +92,6 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Sets the current clause.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @param string $clause Clause to set as current.
-		 * @return \Sandhills\Sidecar Current sidecar instance.
-		 */
-		public function set_current_clause( $clause ) {
-			$clause = strtolower( $clause );
-
-			if ( in_array( $clause, $this->allowed_clauses, true ) ) {
-				$this->current_clause = $clause;
-			}
-
-			return $this;
-		}
-
-		/**
-		 * Retrieves the current clause.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @return string Current clause name.
-		 */
-		public function get_current_clause() {
-			return $this->current_clause;
-		}
-
-		/**
-		 * Sets the current field.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @param string $field Field to set as current.
-		 * @return \Sandhills\Sidecar Current sidecar instance.
-		 */
-		public function set_current_field( $field ) {
-			$this->current_field = sanitize_key( $field );
-
-			return $this;
-		}
-
-		/**
-		 * Retrieves the current field name.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @return string Current field name.
-		 */
-		public function get_current_field() {
-			return $this->current_field;
-		}
-
-		/**
-		 * Resets the current clause.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 */
-		public function reset_vars() {
-			$this->current_clause = null;
-			$this->current_field = null;
-		}
-
-		/**
-		 * Validates that the given comparison operator is allowed.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @param string $operator Comparison operator.
-		 * @return bool True if the operator is valid, otherwise false.
-		 */
-		public function validate_compare( $operator ) {
-			$allowed = in_array( $operator, $this->allowed_compares, true );
-
-			/**
-			 * Filters whether the given comparison operator is "allowed".
-			 *
-			 * @since 1.0.0
-			 *
-			 * @param bool               $allowed  Whether the operator is allowed.
-			 * @param string             $operator Comparison operator being checked.
-			 * @param \Sandhills\Sidecar $this     Current Sidecar instance.
-			 */
-			return apply_filters( 'sidecar_validate_compare', $allowed, $operator, $this );
-		}
-
-		/**
 		 * Builds a section of the WHERE clause.
 		 *
 		 * @access public
@@ -773,6 +680,30 @@ namespace Sandhills {
 		}
 
 		/**
+		 * Validates that the given comparison operator is allowed.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $operator Comparison operator.
+		 * @return bool True if the operator is valid, otherwise false.
+		 */
+		public function validate_compare( $operator ) {
+			$allowed = in_array( $operator, $this->allowed_compares, true );
+
+			/**
+			 * Filters whether the given comparison operator is "allowed".
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param bool               $allowed  Whether the operator is allowed.
+			 * @param string             $operator Comparison operator being checked.
+			 * @param \Sandhills\Sidecar $this     Current Sidecar instance.
+			 */
+			return apply_filters( 'sidecar_validate_compare', $allowed, $operator, $this );
+		}
+
+		/**
 		 * Retrieves raw, sanitized SQL for the current clause.
 		 *
 		 * @access public
@@ -806,6 +737,75 @@ namespace Sandhills {
 			}
 
 			return $sql;
+		}
+
+		/**
+		 * Sets the current clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $clause Clause to set as current.
+		 * @return \Sandhills\Sidecar Current sidecar instance.
+		 */
+		public function set_current_clause( $clause ) {
+			$clause = strtolower( $clause );
+
+			if ( in_array( $clause, $this->allowed_clauses, true ) ) {
+				$this->current_clause = $clause;
+			}
+
+			return $this;
+		}
+
+		/**
+		 * Retrieves the current clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @return string Current clause name.
+		 */
+		public function get_current_clause() {
+			return $this->current_clause;
+		}
+
+		/**
+		 * Sets the current field.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $field Field to set as current.
+		 * @return \Sandhills\Sidecar Current sidecar instance.
+		 */
+		public function set_current_field( $field ) {
+			$this->current_field = sanitize_key( $field );
+
+			return $this;
+		}
+
+		/**
+		 * Retrieves the current field name.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @return string Current field name.
+		 */
+		public function get_current_field() {
+			return $this->current_field;
+		}
+
+		/**
+		 * Resets the current clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 */
+		public function reset_vars() {
+			$this->current_clause = null;
+			$this->current_field = null;
 		}
 	}
 }
