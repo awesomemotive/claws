@@ -628,17 +628,25 @@ namespace Sandhills {
 			}
 
 			$current_field = $this->get_current_field();
-			$calback       = $this->get_callback( $callback_or_type );
+			$callback      = $this->get_callback( $callback_or_type );
 
 			$sql = '';
 
 			// Grab the first two values in the array.
 			$values = array_slice( $values, 0, 2 );
 
-			// Sanitize the values according to the callback.
-			$values = array_map( $callback, $values );
+			// Sanitize the values according to the callback and cast dates.
+			$values = array_map( function( $value ) use ( $callback ) {
+				$value = call_user_func( $callback, $value );
 
-			$sql .= "`( {$current_field}` {$compare} {$values[0]} AND {$values[1]} )";
+				if ( false !== strpos( $value, ':' ) ) {
+					$value = "CAST( '{$value}' AS DATE)";
+				}
+
+				return $value;
+			}, $values );
+
+			$sql .= "( `{$current_field}` {$compare} {$values[0]} AND {$values[1]} )";
 
 			return $sql;
 		}
