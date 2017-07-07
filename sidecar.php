@@ -258,12 +258,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Single value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $compare          MySQL operator used for comparing the $value. Accepts '=', '!=',
 		 *                                          '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN',
 		 *                                          'NOT BETWEEN', 'EXISTS' or 'NOT EXISTS'.
 		 *                                          Default is 'IN' when `$value` is an array, '=' otherwise.
-		 * @return \Sandhills\Sidecar
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
 		public function where( $field ) {
 			if ( $field !== $this->get_current_field() ) {
@@ -302,12 +302,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function equals( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function equals( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
 			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '=', $operator );
 
@@ -324,12 +324,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function doesnt_equal( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function doesnt_equal( $value, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
 			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '!=', $operator );
 
@@ -402,12 +402,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function gt( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function gt( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
 			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '>', $operator );
 
@@ -424,12 +424,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function lt( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function lt( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
 			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '<', $operator );
 
@@ -446,12 +446,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function gte( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function gte( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
 			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '>=', $operator );
 
@@ -468,12 +468,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function lte( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function lte( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
 			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '<=', $operator );
 
@@ -490,12 +490,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function like( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
 		}
 
@@ -507,12 +507,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function not_like( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function not_like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
 		}
 
@@ -524,12 +524,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function in( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
 		}
 
@@ -575,12 +575,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function not_between( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function not_between( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
 		}
 
@@ -592,12 +592,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function exists( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
 		}
 
@@ -609,12 +609,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function not_exists( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function not_exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
 		}
 
