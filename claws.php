@@ -7,7 +7,7 @@ namespace Sandhills {
 	 *
 	 * @since 1.0.0
 	 */
-	class Sidecar {
+	class Claws {
 
 		/**
 		 * Sidecar version.
@@ -57,7 +57,7 @@ namespace Sandhills {
 		private $clauses_in_progress = array();
 
 		/**
-		 * Whitelist of clauses Sidecar is built to handle.
+		 * Whitelist of clauses Claws is built to handle.
 		 *
 		 * @access private
 		 * @since  1.0.0
@@ -80,7 +80,7 @@ namespace Sandhills {
 		);
 
 		/**
-		 * Retrieves the current Sidecar version.
+		 * Retrieves the current Claws version.
 		 *
 		 * @access public
 		 * @since  1.0.0
@@ -104,9 +104,10 @@ namespace Sandhills {
 		 *                                          '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN',
 		 *                                          'NOT BETWEEN', 'EXISTS' or 'NOT EXISTS'.
 		 *                                          Default is 'IN' when `$value` is an array, '=' otherwise.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
-		public function where( $field, $compare = null, $values = null ) {
+		public function where( $field, $compare = null, $values = null, $callback_or_type = 'esc_sql' ) {
 			if ( $field !== $this->get_current_field() ) {
 				$this->set_current_field( $field );
 			}
@@ -117,28 +118,28 @@ namespace Sandhills {
 			if ( isset( $compare ) && isset( $values ) ) {
 				switch( $compare ) {
 					case '!=':
-						return $this->doesnt_equal( $values );
+						return $this->doesnt_equal( $values, $callback_or_type );
 						break;
 
 					case '<':
-						return $this->lt( $values );
+						return $this->lt( $values, $callback_or_type );
 						breal;
 
 					case '>':
-						return $this->gt( $values );
+						return $this->gt( $values, $callback_or_type );
 						break;
 
 					case '<=':
-						return $this->lte( $values );
+						return $this->lte( $values, $callback_or_type );
 						break;
 
 					case '>=':
-						return $this->gte( $values );
+						return $this->gte( $values, $callback_or_type );
 						break;
 
 					case '=':
 					default:
-						return $this->equals( $values );
+						return $this->equals( $values, $callback_or_type );
 						break;
 				}
 			}
@@ -159,7 +160,8 @@ namespace Sandhills {
 		 *
 		 * @param string      $sql    Raw, sanitized and escaped SQL.
 		 * @param null|string $clause Optional. Clause to append the SQL to. Default is the current clause.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function raw_sql( $sql, $clause = null ) {
 			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
@@ -182,7 +184,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function equals( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -204,7 +207,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function doesnt_equal( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -226,7 +230,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function gt( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -248,7 +253,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function lt( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -270,7 +276,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function gte( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -292,7 +299,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function lte( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -314,7 +322,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -336,7 +345,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function not_like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -358,7 +368,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -388,7 +399,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function not_in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
@@ -420,7 +432,8 @@ namespace Sandhills {
 		 * @param array           $values           Array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function between( $values, $callback_or_type = 'esc_sql' ) {
 			$current_clause = $this->get_current_clause();
@@ -440,7 +453,8 @@ namespace Sandhills {
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function not_between( $values, $callback_or_type = 'esc_sql' ) {
 			$current_clause = $this->get_current_clause();
@@ -462,7 +476,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
@@ -479,7 +494,8 @@ namespace Sandhills {
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function not_exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
@@ -527,7 +543,8 @@ namespace Sandhills {
 
 			// Loop through the values and bring in $operator if needed.
 			foreach ( $values as $value ) {
-				if ( in_array( $value_type, array( 'string', 'float' ) ) ) {
+
+				if ( 'string' === gettype( $value ) ) {
 					$value = "'{$value}'";
 				}
 
@@ -569,7 +586,17 @@ namespace Sandhills {
 			}
 
 			// Escape values.
-			$values = implode( ', ', array_map( $callback, $values ) );
+			$values = array_map( function( $value ) use ( $callback ) {
+				$value = call_user_func( $callback, $value );
+
+				if ( 'string' === gettype( $value ) ) {
+					$value = "'{$value}'";
+				}
+				
+				return $value;
+			}, $values );
+
+			$values = implode( ', ', $values );
 
 			$sql = "{$current_field} {$compare}( {$values} )";
 
@@ -700,11 +727,11 @@ namespace Sandhills {
 			 *
 			 * @since 1.0.0
 			 *
-			 * @param callable           $callback Callback.
-			 * @param string             $type     Type to retrieve a callback for.
-			 * @param \Sandhills\Sidecar $this     Current Sidebar instance.
+			 * @param callable         $callback Callback.
+			 * @param string           $type     Type to retrieve a callback for.
+			 * @param \Sandhills\Claws $this     Current Sidebar instance.
 			 */
-			return apply_filters( 'sidecar_callback_for_type', $callback, $type, $this );
+			return apply_filters( 'claws_callback_for_type', $callback, $type, $this );
 		}
 
 		/**
@@ -743,11 +770,11 @@ namespace Sandhills {
 			 *
 			 * @since 1.0.0
 			 *
-			 * @param bool               $allowed  Whether the operator is allowed.
-			 * @param string             $operator Comparison operator being checked.
-			 * @param \Sandhills\Sidecar $this     Current Sidecar instance.
+			 * @param bool             $allowed  Whether the operator is allowed.
+			 * @param string           $operator Comparison operator being checked.
+			 * @param \Sandhills\Claws $this     Current Claws instance.
 			 */
-			return apply_filters( 'sidecar_validate_compare', $allowed, $operator, $this );
+			return apply_filters( 'claws_validate_compare', $allowed, $operator, $this );
 		}
 
 		/**
@@ -793,7 +820,8 @@ namespace Sandhills {
 		 * @since  1.0.0
 		 *
 		 * @param string $clause Clause to set as current.
-		 * @return \Sandhills\Sidecar Current sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current claws instance.
 		 */
 		public function set_current_clause( $clause ) {
 			$clause = strtolower( $clause );
@@ -824,7 +852,8 @@ namespace Sandhills {
 		 * @since  1.0.0
 		 *
 		 * @param string $field Field to set as current.
-		 * @return \Sandhills\Sidecar Current sidecar instance.
+		 *
+		 * @return \Sandhills\Claws Current claws instance.
 		 */
 		public function set_current_field( $field ) {
 			$this->current_field = sanitize_key( $field );
@@ -860,14 +889,14 @@ namespace Sandhills {
 namespace {
 
 	/**
-	 * Shorthand helper for retrieving the Sidecar instance.
+	 * Shorthand helper for retrieving the Claws instance.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return \Sandhills\Sidecar Sidecar instance.
+	 * @return \Sandhills\Claws Claws instance.
 	 */
-	function sidecar() {
-		return new \Sandhills\Sidecar;
+	function claws() {
+		return new \Sandhills\Claws;
 	}
 
 }
