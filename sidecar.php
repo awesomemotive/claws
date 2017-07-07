@@ -340,7 +340,7 @@ namespace Sandhills {
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function doesnt_equal( $value, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+		public function doesnt_equal( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$current_clause = $this->get_current_clause();
 			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '!=', $operator );
 
@@ -370,10 +370,10 @@ namespace Sandhills {
 			$sql      = '';
 			$callback = $this->get_callback( $callback_or_type );
 			$operator = $this->get_operator( $operator );
-			$values   = is_array( $value ) ? $value : (array) $value;
+			$values   = is_array( $values ) ? $values : (array) $values;
 
 			// Sanitize the values and built the SQL.
-			$values = array_map( $callback, $value );
+			$values = array_map( $callback, $values );
 
 			$value_count = count( $values );
 
@@ -383,11 +383,16 @@ namespace Sandhills {
 			}
 
 			$current_field = $this->get_current_field();
+			$value_type    = gettype( $values[0] );
 
 			$current = 0;
 
 			// Loop through the values and bring in $operator if needed.
 			foreach ( $values as $value ) {
+				if ( in_array( $value_type, array( 'string', 'float' ) ) ) {
+					$value = "'{$value}'";
+				}
+
 				$sql .= "`{$current_field}` {$compare} {$value}";
 
 				if ( $value_count > 1 && ++$current !== $value_count ) {
@@ -668,7 +673,7 @@ namespace Sandhills {
 			// Sanitize the values according to the callback.
 			$values = array_map( $callback, $values );
 
-			$sql .= "`{$current_field}` {$compare} {$values[0]} AND {$values[1]}";
+			$sql .= "`( {$current_field}` {$compare} {$values[0]} AND {$values[1]} )";
 
 			return $sql;
 		}
@@ -788,14 +793,29 @@ namespace Sandhills {
 		 * @access public
 		 * @since  1.0.0
 		 *
+		 * @param string $clause Optional. Clause to build SQL for. Default is the current clause.
 		 * @return string Raw, sanitized SQL.
 		 */
-		public function get_sql() {
+		public function get_sql( $clause = '' ) {
 			$sql            = '';
-			$current_clause = $this->get_current_clause();
 
-			if ( isset( $this->clauses_in_progress[ $current_clause ] ) ) {
-				$sql = strtoupper( $current_clause ) . ' ' . $this->clauses_in_progress[ $current_clause ];
+			if ( empty( $clause ) ) {
+				$clause = $this->get_current_clause();
+			}
+
+			if ( isset( $this->clauses_in_progress[ $clause ] ) ) {
+				$sql .= strtoupper( $clause );
+
+				$current = 0;
+				$count   = count( $this->clauses_in_progress[ $clause ] );
+
+				foreach ( $this->clauses_in_progress[ $clause ] as $chunk ) {
+					if ( ++$current === 1 ) {
+						$sql .= " {$chunk}";
+					} elseif( $current >= 2 ) {
+						$sql .= " AND {$chunk}";
+					}
+				}
 
 				$this->reset_vars();
 			}
