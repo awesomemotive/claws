@@ -375,67 +375,6 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Helper used by direct comparison methods to build SQL.
-		 *
-		 * @access protected
-		 * @since  1.0.0
-		 *
-		 * @param array            $values           Array of values to compare.
-		 * @param string|callable  $callback_or_type Sanitization callback to pass values through, or shorthand
-		 *                                           types to use preset callbacks.
-		 * @param string           $compare          Comparison to make. Accepts '=', '!=', '<', '>', '<=', or '>='.
-		 *                                           Default '='.
-		 * @param string           $operator         Optional. Operator to use between multiple sets of value comparisons.
-		 *                                           Accepts 'OR' or 'AND'. Default 'OR'.
-		 * @return string Raw, sanitized SQL.
-		 */
-		protected function get_comparison_sql( $value_sets, $callback_or_type, $compare, $operator = 'OR' ) {
-			if ( ! in_array( $compare, array( '=', '!=', '<', '>', '<=', '>=' ) ) ) {
-				$compare = '=';
-			}
-
-			$sql      = '';
-			$callback = $this->get_callback( $callback_or_type );
-			$operator = $this->get_operator( $operator );
-			$values   = is_array( $values ) ? $values : (array) $values;
-
-			// Sanitize the values and built the SQL.
-			$values = array_map( $callback, $values );
-
-			$value_count = count( $values );
-
-			// Start the phrase.
-			if ( $value_count > 1 ) {
-				$sql .= '( ';
-			}
-
-			$current_field = $this->get_current_field();
-			$value_type    = gettype( $values[0] );
-
-			$current = 0;
-
-			// Loop through the values and bring in $operator if needed.
-			foreach ( $values as $value ) {
-				if ( in_array( $value_type, array( 'string', 'float' ) ) ) {
-					$value = "'{$value}'";
-				}
-
-				$sql .= "`{$current_field}` {$compare} {$value}";
-
-				if ( $value_count > 1 && ++$current !== $value_count ) {
-					$sql .= " {$operator} ";
-				}
-			}
-
-			// Finish the phrase.
-			if ( $value_count > 1 ) {
-				$sql .= ' )';
-			}
-
-			return $sql;
-		}
-
-		/**
 		 * Handles '>' value comparison.
 		 *
 		 * @access public
@@ -618,36 +557,6 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Helper used by 'in' comparison methods to build SQL.
-		 *
-		 * @access protected
-		 * @since  1.0.0
-		 *
-		 * @param array           $values           Array of values to compare.
-		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks.
-		 * @param string $compare Comparison to make. Accepts 'IN' or 'NOT IN'.
-		 * @return string Raw, sanitized SQL.
-		 */
-		protected function get_in_sql( $values, $callback_or_type, $compare ) {
-			$current_field  = $this->get_current_field();
-
-			$callback = $this->get_callback( $callback_or_type );
-			$compare  = strtoupper( $compare );
-
-			if ( ! in_array( $compare, array( 'IN', 'NOT IN' ) ) ) {
-				$compare = 'IN';
-			}
-
-			// Escape values.
-			$values = implode( ', ', array_map( $callback, $values ) );
-
-			$sql = "{$current_field} {$compare}( {$values} )";
-
-			return $sql;
-		}
-
-		/**
 		 * Handles 'BETWEEN' value comparison.
 		 *
 		 * Note: If doing a between comparison for dates, care should be taken to ensure
@@ -692,6 +601,131 @@ namespace Sandhills {
 		}
 
 		/**
+		 * Handles 'EXISTS' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $values           Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'NOT EXISTS' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $values           Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function not_exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Helper used by direct comparison methods to build SQL.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 *
+		 * @param array            $values           Array of values to compare.
+		 * @param string|callable  $callback_or_type Sanitization callback to pass values through, or shorthand
+		 *                                           types to use preset callbacks.
+		 * @param string           $compare          Comparison to make. Accepts '=', '!=', '<', '>', '<=', or '>='.
+		 *                                           Default '='.
+		 * @param string           $operator         Optional. Operator to use between multiple sets of value comparisons.
+		 *                                           Accepts 'OR' or 'AND'. Default 'OR'.
+		 * @return string Raw, sanitized SQL.
+		 */
+		protected function get_comparison_sql( $value_sets, $callback_or_type, $compare, $operator = 'OR' ) {
+			if ( ! in_array( $compare, array( '=', '!=', '<', '>', '<=', '>=' ) ) ) {
+				$compare = '=';
+			}
+
+			$sql      = '';
+			$callback = $this->get_callback( $callback_or_type );
+			$operator = $this->get_operator( $operator );
+			$values   = is_array( $values ) ? $values : (array) $values;
+
+			// Sanitize the values and built the SQL.
+			$values = array_map( $callback, $values );
+
+			$value_count = count( $values );
+
+			// Start the phrase.
+			if ( $value_count > 1 ) {
+				$sql .= '( ';
+			}
+
+			$current_field = $this->get_current_field();
+			$value_type    = gettype( $values[0] );
+
+			$current = 0;
+
+			// Loop through the values and bring in $operator if needed.
+			foreach ( $values as $value ) {
+				if ( in_array( $value_type, array( 'string', 'float' ) ) ) {
+					$value = "'{$value}'";
+				}
+
+				$sql .= "`{$current_field}` {$compare} {$value}";
+
+				if ( $value_count > 1 && ++$current !== $value_count ) {
+					$sql .= " {$operator} ";
+				}
+			}
+
+			// Finish the phrase.
+			if ( $value_count > 1 ) {
+				$sql .= ' )';
+			}
+
+			return $sql;
+		}
+
+		/**
+		 * Helper used by 'in' comparison methods to build SQL.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 *
+		 * @param array           $values           Array of values to compare.
+		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks.
+		 * @param string $compare Comparison to make. Accepts 'IN' or 'NOT IN'.
+		 * @return string Raw, sanitized SQL.
+		 */
+		protected function get_in_sql( $values, $callback_or_type, $compare ) {
+			$current_field  = $this->get_current_field();
+
+			$callback = $this->get_callback( $callback_or_type );
+			$compare  = strtoupper( $compare );
+
+			if ( ! in_array( $compare, array( 'IN', 'NOT IN' ) ) ) {
+				$compare = 'IN';
+			}
+
+			// Escape values.
+			$values = implode( ', ', array_map( $callback, $values ) );
+
+			$sql = "{$current_field} {$compare}( {$values} )";
+
+			return $sql;
+		}
+
+		/**
 		 * Helper used by 'between' comparison methods to build SQL.
 		 *
 		 * @access protected
@@ -727,40 +761,6 @@ namespace Sandhills {
 			$sql .= "`( {$current_field}` {$compare} {$values[0]} AND {$values[1]} )";
 
 			return $sql;
-		}
-
-		/**
-		 * Handles 'EXISTS' value comparison.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @param mixed           $values           Value of varying types, or array of values.
-		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'esc_sql'.
-		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
-		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
-		 */
-		public function exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			return $this;
-		}
-
-		/**
-		 * Handles 'NOT EXISTS' value comparison.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @param mixed           $values           Value of varying types, or array of values.
-		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'esc_sql'.
-		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
-		 *                                          building the expression. Default 'OR'.
-		 * @return \Sandhills\Sidecar Current Sidecar instance.
-		 */
-		public function not_exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			return $this;
 		}
 
 		/**
