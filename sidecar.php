@@ -500,7 +500,7 @@ namespace Sandhills {
 		 *                                           Accepts 'OR' or 'AND'. Default 'OR'.
 		 * @return string Raw, sanitized SQL.
 		 */
-		protected function get_comparison_sql( $value_sets, $callback_or_type, $compare, $operator = 'OR' ) {
+		protected function get_comparison_sql( $values, $callback_or_type, $compare, $operator = 'OR' ) {
 			if ( ! in_array( $compare, array( '=', '!=', '<', '>', '<=', '>=' ) ) ) {
 				$compare = '=';
 			}
