@@ -889,7 +889,7 @@ namespace Sandhills {
 namespace {
 
 	/**
-	 * Shorthand helper for retrieving the Claws instance.
+	 * Shorthand helper for retrieving a Claws instance.
 	 *
 	 * @since 1.0.0
 	 *
