@@ -265,33 +265,42 @@ namespace Sandhills {
 		 *                                          Default is 'IN' when `$value` is an array, '=' otherwise.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function where( $field ) {
+		public function where( $field, $compare = null, $values = null ) {
 			if ( $field !== $this->get_current_field() ) {
 				$this->set_current_field( $field );
 			}
 
 			$this->set_current_clause( 'where' );
 
-			if ( ! is_callable( $callback_or_type ) ) {
-				/*
-				 * TODO: Decide whether to throw an exception if get_callback() stiill doesn't yield a callable.
-				 *
-				 * Could make implementing code a bit too long-winded having to try/catch all over the place.
-				 * Mayyyybe it can be done via an abstraction layer, such as moving this business logic a
-				 * level deeper.
-				 */
-				$callback = $this->get_callback( $callback_or_type );
+			// Handle shorthand comparison phrases.
+			if ( isset( $compare ) && isset( $values ) ) {
+				switch( $compare ) {
+					case '!=':
+						$this->doesnt_equal( $values );
+						break;
+
+					case '<':
+						$this->lt( $values );
+						breal;
+
+					case '>':
+						$this->gt( $values );
+						break;
+
+					case '<=':
+						$this->lte( $values );
+						break;
+
+					case '>=':
+						$this->gte( $values );
+						break;
+
+					case '=':
+					default:
+						$this->equals( $values );
+						break;
+				}
 			}
-
-			if ( ! is_array( $values ) ) {
-				$values = (array) $values;
- 			}
-
- 			if ( ! $this->validate_compare( $compare ) ) {
-				$compare = '=';
-		    }
-
-
 		}
 
 		/**
