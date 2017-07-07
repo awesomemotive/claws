@@ -364,16 +364,11 @@ namespace Sandhills {
 
 			$sql      = '';
 			$callback = $this->get_callback( $callback_or_type );
+			$operator = $this->get_operator( $operator );
 			$values   = is_array( $value ) ? $value : (array) $value;
 
 			// Sanitize the values and built the SQL.
 			$values = array_map( $callback, $value );
-
-			if ( ! in_array( strtoupper( $operator ), array( 'OR', 'AND' ) ) ) {
-				$operator = 'OR';
-			} else {
-				$operator = strtoupper( $operator );
-			}
 
 			$value_count = count( $values );
 
@@ -550,12 +545,12 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function not_in( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function not_in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			return $this;
 		}
 
@@ -567,9 +562,7 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'intval'.
-		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
-		 *                                          building the expression. Default 'OR'.
+		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
 		public function between( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
@@ -681,6 +674,25 @@ namespace Sandhills {
 			 * @param \Sandhills\Sidecar $this     Current Sidebar instance.
 			 */
 			return apply_filters( 'sidecar_callback_for_type', $callback, $type, $this );
+		}
+
+		/**
+		 * Validates and retrieves the operator.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $operator Operator. Accepts 'OR' or 'AND'.
+		 * @return string Operator. 'OR' if an invalid operator is passed to `$operator`.
+		 */
+		public function get_operator( $operator ) {
+			$operator = strtoupper( $operator );
+
+			if ( ! in_array( $operator, array( 'OR', 'AND' ) ) ) {
+				$operator = 'OR';
+			}
+
+			return $operator;
 		}
 
 		/**
