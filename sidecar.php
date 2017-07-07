@@ -555,7 +555,7 @@ namespace Sandhills {
 		 * @param array           $values           Array of values to compare.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks.
-		 * @param string $compare Comparison to make. Accepts 'IN' or 'NOT IN'.
+		 * @param string          $compare          Comparison to make. Accepts 'IN' or 'NOT IN'.
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_in_sql( $values, $callback_or_type, $compare ) {
@@ -620,6 +620,8 @@ namespace Sandhills {
 			if ( ! is_array( $values ) || count( $values ) < 2 ) {
 				return $this;
 			}
+
+			$compare = strtoupper( $compare );
 
 			if ( ! in_array( $compare, array( 'BETWEEN', 'NOT BETWEEN' ) ) ) {
 				$compare = 'BETWEEN';
