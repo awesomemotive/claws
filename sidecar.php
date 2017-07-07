@@ -10,16 +10,6 @@ namespace Sandhills {
 	class Sidecar {
 
 		/**
-		 * The single Sidecar instance.
-		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    \Sandhills\Sidecar
-		 * @static
-		 */
-		private static $instance;
-
-		/**
 		 * Sidecar version.
 		 *
 		 * @access private
@@ -27,15 +17,6 @@ namespace Sandhills {
 		 * @var    string
 		 */
 		private $version = '1.0.0';
-
-		/**
-		 * Holds the wpdb global instance.
-		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    \wpdb
-		 */
-		private $wpdb;
 
 		/**
 		 * The running SELECT clause for the current instance.
@@ -148,7 +129,9 @@ namespace Sandhills {
 		 * @since  1.0.0
 		 * @var    array
 		 */
-		private $allowed_clauses = array( 'select', 'where', 'join', 'orderby', 'order', 'count' );
+		private $allowed_clauses = array(
+			'select', 'where', 'join', 'orderby', 'order', 'count'
+		);
 
 		/**
 		 * Whitelist of allowed comparison operators.
@@ -161,40 +144,6 @@ namespace Sandhills {
 			'=', '!=', '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN',
 			'NOT IN', 'BETWEEN', 'NOT BETWEEN', 'EXISTS', 'NOT EXISTS'
 		);
-
-		/**
-		 * Sets up and retrieves the Sidecar instance.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 * @static
-		 *
-		 * @return \Sandhills\Sidecar Sidecar instance.
-		 */
-		public static function instance() {
-
-			if ( ! isset( self::$instance ) && ! ( self::$instance instanceof Sidecar ) ) {
-				self::$instance = new Sidecar;
-
-				self::$instance->setup();
-			}
-
-			return self::$instance;
-		}
-
-		/**
-		 * Sets up needed values.
-		 *
-		 * @access private
-		 * @since  1.0.0
-		 */
-		private function setup() {
-			global $wpdb;
-
-			if ( $wpdb instanceof \wpdb ) {
-				$this->wpdb = $wpdb;
-			}
-		}
 
 		/**
 		 * Retrieves the current Sidecar version.
@@ -684,7 +633,7 @@ namespace {
 	 * @return \Sandhills\Sidecar Sidecar instance.
 	 */
 	function sidecar() {
-		return \Sandhills\Sidecar::instance();
+		return new \Sandhills\Sidecar;
 	}
 
 }
