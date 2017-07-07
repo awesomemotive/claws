@@ -283,21 +283,55 @@ namespace Sandhills {
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param string|int|array $values   Value(s) as a string, integer, or array.
-		 * @param string           $callback Optional. Callback to use against the value(s). Default 'intval'.
-		 * @param string           $clause   Optional. Clause to append the sanitized values against.
-		 *                                   Default empty (current clause).
-		 * @return string|\WP_Error SQL for the current clause, otherwise a WP_Error object.
+		 * @param string $operator Comparison operator.
+		 * @return bool True if the operator is valid, otherwise false.
 		 */
-		public function values( $values, $callback = 'intval', $clause = '' ) {
-			if ( empty( $callback ) || ! is_callable( $callback ) ) {
-				$callback = 'intval';
+		public function validate_compare( $operator ) {
+			$allowed = in_array( $operator, $this->allowed_compares, true );
+
+			/**
+			 * Filters whether the given comparison operator is "allowed".
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param bool               $allowed  Whether the operator is allowed.
+			 * @param string             $operator Comparison operator being checked.
+			 * @param \Sandhills\Sidecar $this     Current Sidecar instance.
+			 */
+			return apply_filters( 'sidecar_valid_compare', $allowed, $operator, $this );
+		}
+
+		/**
+		 * Builds a section of the WHERE clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $values           Single value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $compare          MySQL operator used for comparing the $value. Accepts '=', '!=',
+		 *                                          '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN',
+		 *                                          'NOT BETWEEN', 'EXISTS' or 'NOT EXISTS'.
+		 *                                          Default is 'IN' when `$value` is an array, '=' otherwise.
+		 * @return \Sandhills\Sidecar
+		 */
+		public function where( $field ) {
+			if ( $field !== $this->get_current_field() ) {
+				$this->set_current_field( $field );
 			}
 
-			if ( is_array( $values ) ) {
-				$this->current_value = array_map( $callback, $values );
-			} else {
-				$this->current_value = call_user_func( $callback, $values );
+			$this->set_current_clause( 'where' );
+
+			if ( ! is_callable( $callback_or_type ) ) {
+				/*
+				 * TODO: Decide whether to throw an exception if get_callback() stiill doesn't yield a callable.
+				 *
+				 * Could make implementing code a bit too long-winded having to try/catch all over the place.
+				 * Mayyyybe it can be done via an abstraction layer, such as moving this business logic a
+				 * level deeper.
+				 */
+				$callback = $this->get_callback( $callback_or_type );
 			}
 
 			return $this->get_clause( $clause );
