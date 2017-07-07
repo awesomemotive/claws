@@ -358,11 +358,13 @@ namespace Sandhills {
 		 * @param array            $values           Array of values to compare.
 		 * @param string|callable  $callback_or_type Sanitization callback to pass values through, or shorthand
 		 *                                           types to use preset callbacks.
-		 * @param string $compare  Comparison to make. Accepts '=' or '
-		 * @param string $operator Operator to use between multiple sets of value comparisonsHow. Accepts 'OR'
-		 *                         or 'AND'.
+		 * @param string           $compare          Comparison to make. Accepts '=', '!=', '<', '>', '<=', or '>='.
+		 *                                           Default '='.
+		 * @param string           $operator         Optional. Operator to use between multiple sets of value comparisons.
+		 *                                           Accepts 'OR' or 'AND'. Default 'OR'.
+		 * @return string Raw, sanitized SQL.
 		 */
-		protected function get_comparison_sql( $values, $callback_or_type, $compare, $operator ) {
+		protected function get_comparison_sql( $value_sets, $callback_or_type, $compare, $operator = 'OR' ) {
 			if ( ! in_array( $compare, array( '=', '!=', '<', '>', '<=', '>=' ) ) ) {
 				$compare = '=';
 			}
