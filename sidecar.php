@@ -605,25 +605,8 @@ namespace Sandhills {
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
 		public function between( $values, $callback_or_type = 'esc_sql' ) {
-			// Bail if `$values` isn't an array or there aren't at least two values.
-			if ( ! is_array( $values ) || count( $values ) < 2 ) {
-				return $this;
-			}
-
 			$current_clause = $this->get_current_clause();
-			$current_field  = $this->get_current_field();
-			$calback        = $this->get_callback( $callback_or_type );
-			$operator       = $this->get_operator( $operator );
-
-			$sql = '';
-
-			// Grab the first two values in the array.
-			$values = array_slice( $values, 0, 2 );
-
-			// Sanitize the values according to the callback.
-			$values = array_map( $callback, $values );
-
-			$sql .= "`{$current_field}` BETWEEN {$values[0]} AND {$values[1]}";
+			$sql            = $this->get_between_sql( $values, $callback_or_type, 'BETWEEN' );
 
 			$this->clauses_in_progress[ $current_clause ][] = $sql;
 
@@ -639,12 +622,53 @@ namespace Sandhills {
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
-		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
-		 *                                          building the expression. Default 'OR'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function not_between( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+		public function not_between( $values, $callback_or_type = 'esc_sql' ) {
+			$current_clause = $this->get_current_clause();
+			$sql            = $this->get_between_sql( $values, $callback_or_type, 'NOT BETWEEN' );
+
+			$this->clauses_in_progress[ $current_clause ][] = $sql;
+
 			return $this;
+		}
+
+		/**
+		 * Helper used by 'between' comparison methods to build SQL.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 *
+		 * @param array           $values           Array of values to compare.
+		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks.
+		 * @param string $compare Comparison to make. Accepts '=' or '
+		 * @param $operator
+		 */
+		protected function get_between_sql( $values, $callback_or_type, $compare ) {
+			// Bail if `$values` isn't an array or there aren't at least two values.
+			if ( ! is_array( $values ) || count( $values ) < 2 ) {
+				return $this;
+			}
+
+			if ( ! in_array( $compare, array( 'BETWEEN', 'NOT BETWEEN' ) ) ) {
+				$compare = 'BETWEEN';
+			}
+
+			$current_field = $this->get_current_field();
+			$calback       = $this->get_callback( $callback_or_type );
+
+			$sql = '';
+
+			// Grab the first two values in the array.
+			$values = array_slice( $values, 0, 2 );
+
+			// Sanitize the values according to the callback.
+			$values = array_map( $callback, $values );
+
+			$sql .= "`{$current_field}` {$compare} {$values[0]} AND {$values[1]}";
+
+			return $sql;
 		}
 
 		/**
