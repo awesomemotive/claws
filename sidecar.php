@@ -317,6 +317,11 @@ namespace Sandhills {
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
 		public function like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+			$current_clause = $this->get_current_clause();
+			$sql            = $this->get_like_sql( $values, $callback_or_type, 'LIKE' );
+
+			$this->clauses_in_progress[ $current_clause ][] = $sql;
+
 			return $this;
 		}
 
@@ -334,6 +339,11 @@ namespace Sandhills {
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
 		public function not_like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+			$current_clause = $this->get_current_clause();
+			$sql            = $this->get_like_sql( $values, $callback_or_type, 'NOT LIKE' );
+
+			$this->clauses_in_progress[ $current_clause ][] = $sql;
+
 			return $this;
 		}
 
@@ -567,7 +577,34 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Helper used by 'between' comparison methods to build SQL.
+		 * Helper used by 'LIKE' comparison methods to build SQL.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 *
+		 * @param array           $values           Array of values to compare.
+		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks.
+		 * @param string          $compare          Comparison to make. Accepts 'LIKE' or 'NOT LIKE'.
+		 * @return string Raw, sanitized SQL.
+		 */
+		protected function get_like_sql( $values, $callback_or_type, $compare ) {
+			$callback = $this->get_callback( $callback_or_type );
+			$field    = $this->get_current_field();
+			$compare  = strtoupper( $compare );
+
+			if ( ! in_array( $compare, array( 'LIKE', 'NOT LIKE' ) ) ) {
+				$compare = 'LIKE';
+			}
+
+			// Escape values.
+			$sql = "{$field} {$compare} '%%{$values}%%'";
+
+			return $sql;
+		}
+
+		/**
+		 * Helper used by 'BETWEEN' comparison methods to build SQL.
 		 *
 		 * @access protected
 		 * @since  1.0.0
