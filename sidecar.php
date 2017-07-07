@@ -209,41 +209,76 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Sets the current clause for manipulation and returns the current instance.
+		 * Sets the current clause.
 		 *
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param string $type Clause type.
-		 * @return Sidecar $this Current Sidecar instance.
+		 * @param string $clause Clause to set as current.
+		 * @return \Sandhills\Sidecar Current sidecar instance.
 		 */
-		public function clause( $type ) {
-			$type = strtolower( $type );
+		public function set_current_clause( $clause ) {
+			$clause = strtolower( $clause );
 
-			if ( in_array( $type, $this->allowed_clauses, true ) ) {
-				$this->current_clause = $type;
+			if ( in_array( $clause, $this->allowed_clauses, true ) ) {
+				$this->current_clause = $clause;
 			}
 
 			return $this;
 		}
 
 		/**
-		 * Sets the current field for manipulation and returns the current instance.
+		 * Retrieves the current clause.
 		 *
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param string $field Field to use.
-		 * @return Sidecar $this Current Sidecar instance.
+		 * @return string Current clause name.
 		 */
-		public function field( $field ) {
-			$this->current_field = $field;
+		public function get_current_clause() {
+			return $this->current_clause;
+		}
+
+		/**
+		 * Sets the current field.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $field Field to set as current.
+		 * @return \Sandhills\Sidecar Current sidecar instance.
+		 */
+		public function set_current_field( $field ) {
+			$this->current_field = sanitize_key( $field );
 
 			return $this;
 		}
 
 		/**
-		 * Sanitizes values for the clause.
+		 * Retrieves the current field name.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @return string Current field name.
+		 */
+		public function get_current_field() {
+			return $this->current_field;
+		}
+
+		/**
+		 * Resets the current clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 */
+		public function reset_vars() {
+			$this->current_clause = null;
+			$this->current_field = null;
+		}
+
+		/**
+		 * Validates that the given comparison operator is allowed.
 		 *
 		 * @access public
 		 * @since  1.0.0
