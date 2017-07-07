@@ -63,9 +63,7 @@ namespace Sandhills {
 		 * @since  1.0.0
 		 * @var    array
 		 */
-		private $allowed_clauses = array(
-			'select', 'where', 'join', 'orderby', 'order', 'count'
-		);
+		private $allowed_clauses = array( 'where' );
 
 		/**
 		 * Whitelist of allowed comparison operators.
