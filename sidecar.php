@@ -557,15 +557,41 @@ namespace Sandhills {
 		/**
 		 * Handles 'BETWEEN' value comparison.
 		 *
+		 * Note: If doing a between comparison for dates, care should be taken to ensure
+		 * the beginning and ending dates represent the beginning and/or end of the day
+		 * including hours, minutes, and seconds, depending on the expected range.
+		 *
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param mixed           $values           Value of varying types, or array of values.
+		 * @param array           $values           Array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function between( $values, $callback_or_type = 'intval', $operator = 'OR' ) {
+		public function between( $values, $callback_or_type = 'esc_sql' ) {
+			// Bail if `$values` isn't an array or there aren't at least two values.
+			if ( ! is_array( $values ) || count( $values ) < 2 ) {
+				return $this;
+			}
+
+			$current_clause = $this->get_current_clause();
+			$current_field  = $this->get_current_field();
+			$calback        = $this->get_callback( $callback_or_type );
+			$operator       = $this->get_operator( $operator );
+
+			$sql = '';
+
+			// Grab the first two values in the array.
+			$values = array_slice( $values, 0, 2 );
+
+			// Sanitize the values according to the callback.
+			$values = array_map( $callback, $values );
+
+			$sql .= "`{$current_field}` BETWEEN {$values[0]} AND {$values[1]}";
+
+			$this->clauses_in_progress[ $current_clause ][] = $sql;
+
 			return $this;
 		}
 
