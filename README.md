@@ -1,2 +1,2 @@
 # Claws
-A standalone WordPress database query sanitization library
+A standalone library for standardizing SQL clauses for custom WordPress database queries.
