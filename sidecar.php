@@ -844,13 +844,13 @@ namespace Sandhills {
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param string $clause Optional. Clause to build SQL for. Default is the current clause.
+		 * @param null|string $clause Optional. Clause to build SQL for. Default is the current clause.
 		 * @return string Raw, sanitized SQL.
 		 */
-		public function get_sql( $clause = '' ) {
+		public function get_sql( $clause = null ) {
 			$sql = '';
 
-			if ( empty( $clause ) ) {
+			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
 				$clause = $this->get_current_clause();
 			}
 
