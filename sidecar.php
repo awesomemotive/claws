@@ -247,7 +247,7 @@ namespace Sandhills {
 			 * @param string             $operator Comparison operator being checked.
 			 * @param \Sandhills\Sidecar $this     Current Sidecar instance.
 			 */
-			return apply_filters( 'sidecar_valid_compare', $allowed, $operator, $this );
+			return apply_filters( 'sidecar_validate_compare', $allowed, $operator, $this );
 		}
 
 		/**
