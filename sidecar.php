@@ -334,52 +334,342 @@ namespace Sandhills {
 				$callback = $this->get_callback( $callback_or_type );
 			}
 
-			return $this->get_clause( $clause );
+			if ( ! is_array( $values ) ) {
+				$values = (array) $values;
+ 			}
+
+ 			if ( ! $this->validate_compare( $compare ) ) {
+				$compare = '=';
+		    }
+
+
 		}
 
 		/**
-		 * Retrieves the SQL for the given clause.
+		 * Handles '=' value comparison.
 		 *
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param string $clause Optional. Clause to retrieve built SQL for. Default empty (current clause).
-		 * @return string|\WP_Error SQL for the current clause, otherwise a WP_Error object.
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
 		 */
-		public function get_clause( $clause = '' ) {
-			if ( ! empty( $clause ) ) {
-				$clause = strtolower( $clause );
+		public function equals( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			$callback = $this->get_callback( $callback_or_type );
 
-				if ( in_array( $clause, $this->allowed_clauses, true ) && $clause !== $this->current_clause ) {
-					$this->current_clause = $clause;
+			$value = call_user_func( $callback, $value );
+
+			$current_clause = $this->get_current_clause();
+			$current_field  = $this->get_current_field();
+
+			$this->clauses_in_progress[ $current_clause ][] = "{$current_field} = {$value}";
+
+			return $this;
+		}
+
+		/**
+		 * Handles '!=' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function doesnt_equal( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			$callback = $this->get_callback( $callback_or_type );
+			$value    = call_user_func( $callback, $value );
+			return $this;
+		}
+
+		/**
+		 * Handles '>' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function gt( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+
+			return $this;
+		}
+
+		/**
+		 * Handles '<' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function lt( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles '>=' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function gte( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles '<=' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function lte( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'LIKE' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function like( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'NOT LIKE' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function not_like( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'IN' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function in( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'NOT IN' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function not_in( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'BETWEEN' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function between( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'NOT BETWEEN' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function not_between( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'EXISTS' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function exists( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Handles 'NOT EXISTS' value comparison.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param mixed           $value            Value of varying types, or array of values.
+		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
+		 *                                          types to use preset callbacks. Default 'intval'.
+		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
+		 *                                          building the expression. Default 'OR'.
+		 * @return \Sandhills\Sidecar Current Sidecar instance.
+		 */
+		public function not_exists( $value, $callback_or_type = 'intval', $operator = 'OR' ) {
+			return $this;
+		}
+
+		/**
+		 * Retrieves the callback to use for the given type.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string|callable $type Standard type to retrieve a callback for, or an already-callable.
+		 * @return callable Callback.
+		 */
+		public function get_callback( $type ) {
+
+			if ( is_callable( $type ) ) {
+
+				$callback = $type;
+
+			} else {
+
+				switch( $type ) {
+
+					case 'int':
+					case 'integer':
+						$callback = 'intval';
+						break;
+
+					case 'float':
+					case 'double':
+						$callback = 'floatval';
+						break;
+
+					case 'string':
+						$callback = 'sanitize_text_field';
+						break;
+
+					case 'key':
+						$callback = 'sanitize_key';
+						break;
+
+					default:
+						$callback = 'esc_sql';
+						break;
 				}
+
 			}
 
-			return $this->build_clause();
+			/**
+			 * Filters the callback to use for a given type.
+			 *
+			 * @since 1.0.0
+			 *
+			 * @param callable           $callback Callback.
+			 * @param string             $type     Type to retrieve a callback for.
+			 * @param \Sandhills\Sidecar $this     Current Sidebar instance.
+			 */
+			return apply_filters( 'sidecar_callback_for_type', $callback, $type, $this );
 		}
 
 		/**
-		 * Retrieves the raw, sanitize SQL for the current clause.
+		 * Retrieves raw, sanitized SQL for the current clause.
 		 *
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @return string|\WP_Error SQL for the current clause, otherwise a WP_Error object.
+		 * @return string Raw, sanitized SQL.
 		 */
-		public function build_clause() {
-			if ( ! isset( $this->current_clause ) ) {
-				return new \WP_Error( 'sidecar_invalid_clause', 'A clause must be specified to build against.' );
+		public function get_sql() {
+			$sql            = '';
+			$current_clause = $this->get_current_clause();
+
+			if ( isset( $this->clauses_in_progress[ $current_clause ] ) ) {
+				$sql = strtoupper( $current_clause ) . ' ' . $this->clauses_in_progress[ $current_clause ];
+
+				$this->reset_vars();
 			}
 
-			// TODO Add handling for non field clauses.
-			if ( ! isset( $this->current_field ) ) {
-				return new \WP_Error( 'sidecar_invalid_field', 'A field must be specified to build the clause against.' );
-			}
-
-			if ( ! isset( $this->current_value ) ) {
-				return new \WP_Error( 'sidecar_invalid_values', 'A value or values must be specified to build the clause against.' );
-			}
-
+			return $sql;
 		}
 	}
 }
