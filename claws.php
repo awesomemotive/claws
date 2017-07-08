@@ -891,10 +891,12 @@ namespace Sandhills {
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param null|string $clause Optional. Clause to build SQL for. Default is the current clause.
+		 * @param null|string $clause     Optional. Clause to build SQL for. Default is the current clause.
+		 * @param bool        $reset_vars Optional. Whether to reset the clause, field, and operator vars
+		 *                                after retrieving the clause's SQL. Default true.
 		 * @return string Raw, sanitized SQL.
 		 */
-		public function get_sql( $clause = null ) {
+		public function get_sql( $clause = null, $reset_vars = true ) {
 			$sql = '';
 
 			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
@@ -915,7 +917,9 @@ namespace Sandhills {
 					}
 				}
 
-				$this->reset_vars();
+				if ( true === $reset_vars ) {
+					$this->reset_vars();
+				}
 			}
 
 			return $sql;
@@ -1025,7 +1029,7 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Resets the current clause.
+		 * Resets the current clause, field, and operator.
 		 *
 		 * @access public
 		 * @since  1.0.0
@@ -1033,6 +1037,7 @@ namespace Sandhills {
 		public function reset_vars() {
 			$this->current_clause = null;
 			$this->current_field = null;
+			$this->current_operator = null;
 		}
 	}
 }
