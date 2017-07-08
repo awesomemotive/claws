@@ -39,13 +39,13 @@ namespace Sandhills {
 		private $current_field;
 
 		/**
-		 * Represents the current input value(s).
+		 * Used for carrying the operator between methods when doing complex operations.
 		 *
 		 * @access private
 		 * @since  1.0.0
-		 * @var    mixed
+		 * @var    string
 		 */
-		private $current_value;
+		private $current_operator;
 
 		/**
 		 * Stores clauses in progress for retrieval.
@@ -55,6 +55,29 @@ namespace Sandhills {
 		 * @var    array
 		 */
 		private $clauses_in_progress = array();
+
+		/**
+		 * Whether the current operation is amending the previous phrase.
+		 *
+		 * Used when chaining multiple comparisons of different fields together
+		 * in the same phrase.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    bool
+		 */
+		private $amending_previous = false;
+
+		/**
+		 * Holds the value of the previously-stored phrase when set.
+		 *
+		 * Used in complex phrase-building.
+		 *
+		 * @access private
+		 * @since  1.0.0
+		 * @var    string
+		 */
+		private $previous_phrase;
 
 		/**
 		 * Whitelist of clauses Claws is built to handle.
@@ -497,6 +520,45 @@ namespace Sandhills {
 		}
 
 		/**
+		 * Flags the previously-stored phrase to be amended and appended with an 'OR' operator.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param null|string $clause Optional. Clause to amend the previous chunk for.
+		 *                            Default is the current clause.
+		 */
+		public function or( $clause = null ) {
+			$this->amending_previous = true;
+			$this->set_current_operator( 'OR' );
+
+			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
+				$clause = $this->get_current_clause();
+			}
+
+			$chunks = $this->clauses_in_progress[ $clause ];
+
+			if ( ! empty( $chunks ) ) {
+				$this->previous_phrase = end( $chunks );
+			}
+		}
+
+		/**
+		 * Flags the previously-stored phrase to be amended and appended with an 'AND' operator.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param null|string $clause Optional. Clause to amend the previous chunk for.
+		 *                            Default is the current clause.
+		 */
+		public function and( $clause = null ) {
+			$this->or( $clause );
+
+			$this->set_current_operator( 'AND' );
+		}
+
+		/**
 		 * Helper used by direct comparison methods to build SQL.
 		 *
 		 * @access protected
@@ -889,6 +951,20 @@ namespace Sandhills {
 		 */
 		public function get_current_field() {
 			return $this->current_field;
+		}
+
+		public function set_current_operator( $operator ) {
+			$operator = strtoupper( $operator );
+
+			if ( ! in_array( $operator, array( 'OR', 'AND' ) ) ) {
+				$operator = 'OR';
+			}
+
+			$this->current_operator = $operator;
+		}
+
+		public function get_current_operator() {
+			return $this->current_operator;
 		}
 
 		/**
