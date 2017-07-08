@@ -1,2 +1,2 @@
 # Claws
-A standalone library for standardizing SQL clauses for custom WordPress database queries.
+A library for standardizing the building of SQL clauses used in custom WordPress database queries.
