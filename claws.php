@@ -186,7 +186,7 @@ namespace Sandhills {
 
 					case '<':
 						return $this->lt( $values, $callback_or_type );
-						breal;
+						break;
 
 					case '>':
 						return $this->gt( $values, $callback_or_type );
