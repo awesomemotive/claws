@@ -151,23 +151,22 @@ namespace Sandhills {
 		 * @param mixed           $values           Single value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
-		 * @param string          $compare          MySQL operator used for comparing the $value. Accepts '=', '!=',
+		 * @param string          $compare_type     MySQL operator used for comparing the $value. Accepts '=', '!=',
 		 *                                          '>', '>=', '<', '<=', 'LIKE', 'NOT LIKE', 'IN', 'NOT IN', 'BETWEEN',
 		 *                                          'NOT BETWEEN', 'EXISTS' or 'NOT EXISTS'.
 		 *                                          Default is 'IN' when `$value` is an array, '=' otherwise.
-		 *
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
-		public function where( $field, $compare = null, $values = null, $callback_or_type = 'esc_sql' ) {
+		public function where( $field, $compare_type = null, $values = null, $callback_or_type = 'esc_sql' ) {
 			$this->set_current_clause( 'where' );
 			$this->set_current_field( $field );
 
 			// Handle shorthand comparison phrases.
-			if ( isset( $compare ) && isset( $values ) ) {
+			if ( isset( $compare_type ) && isset( $values ) ) {
 
 				$callback = $this->get_callback( $callback_or_type );
 
-				$this->compare( $compare, $values, $callback );
+				$this->compare( $compare_type, $values, $callback );
 			}
 
 			return $this;
@@ -566,7 +565,8 @@ namespace Sandhills {
 		 * @since   1.0.0
 		 *
 		 * @param array  $values       Array of values.
-		 * @param string $compare_type Type of comparison.
+		 * @param string $compare_type Comparison type to make. Accepts '=', '!=', '<', '>', '<=', or '>='.
+		 *                             Default '='.
 		 * @param string $operator     Operator to use between value comparisons.
 		 * @return string Comparison SQL.
 		 */
@@ -615,16 +615,16 @@ namespace Sandhills {
 		 * @param array           $values           Array of values to compare.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks.
-		 * @param string          $compare          Comparison to make. Accepts 'IN' or 'NOT IN'.
+		 * @param string          $compare_type     Comparison to make. Accepts 'IN' or 'NOT IN'.
 		 * @return string Raw, sanitized SQL.
 		 */
-		protected function get_in_sql( $values, $callback_or_type, $compare ) {
+		protected function get_in_sql( $values, $callback_or_type, $compare_type ) {
 			$field    = $this->get_current_field();
 			$callback = $this->get_callback( $callback_or_type );
-			$compare  = strtoupper( $compare );
+			$compare_type  = strtoupper( $compare_type );
 
-			if ( ! in_array( $compare, array( 'IN', 'NOT IN' ) ) ) {
-				$compare = 'IN';
+			if ( ! in_array( $compare_type, array( 'IN', 'NOT IN' ) ) ) {
+				$compare_type = 'IN';
 			}
 
 			// Escape values.
@@ -640,7 +640,7 @@ namespace Sandhills {
 
 			$values = implode( ', ', $values );
 
-			$sql = "{$field} {$compare}( {$values} )";
+			$sql = "{$field} {$compare_type}( {$values} )";
 
 			return $sql;
 		}
@@ -654,22 +654,23 @@ namespace Sandhills {
 		 * @param array           $values           Array of values to compare.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks.
-		 * @param string          $compare          Comparison to make. Accepts 'LIKE' or 'NOT LIKE'.
+		 * @param string          $compare_type     Comparison to make. Accepts 'LIKE' or 'NOT LIKE'.
 		 * @return string Raw, sanitized SQL.
 		 */
-		protected function get_like_sql( $values, $callback_or_type, $compare, $operator ) {
+		protected function get_like_sql( $values, $callback_or_type, $compare_type, $operator ) {
+			$sql = '';
+
 			if ( null === $callback_or_type ) {
 				$callback_or_type = array( $this, 'esc_like' );
 			}
 
-			$sql      = '';
-			$callback = $this->get_callback( $callback_or_type );
-			$field    = $this->get_current_field();
-			$values   = $this->prepare_values( $values );
-			$compare  = strtoupper( $compare );
+			$callback     = $this->get_callback( $callback_or_type );
+			$field        = $this->get_current_field();
+			$values       = $this->prepare_values( $values );
+			$compare_type = strtoupper( $compare_type );
 
-			if ( ! in_array( $compare, array( 'LIKE', 'NOT LIKE' ) ) ) {
-				$compare = 'LIKE';
+			if ( ! in_array( $compare_type, array( 'LIKE', 'NOT LIKE' ) ) ) {
+				$compare_type = 'LIKE';
 			}
 
 			$values = array_map( $callback, $values );
@@ -679,7 +680,7 @@ namespace Sandhills {
 
 			// Escape values and build the SQL.
 			foreach ( $values as $value ) {
-				$sql .= "{$field} {$compare} '%%{$value}%%'";
+				$sql .= "{$field} {$compare_type} '%%{$value}%%'";
 
 				if ( $value_count > 1 && ++$current !== $value_count ) {
 					$sql .= " {$operator} ";
@@ -698,10 +699,10 @@ namespace Sandhills {
 		 * @param array           $values           Array of values to compare.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks.
-		 * @param string $compare Comparison to make. Accepts '=' or '
+		 * @param string          $compare_type     Comparison to make. Accepts 'BETWEEN' or 'NOT BETWEEN'.
 		 * @return string Raw, sanitized SQL.
 		 */
-		protected function get_between_sql( $values, $callback_or_type, $compare ) {
+		protected function get_between_sql( $values, $callback_or_type, $compare_type ) {
 			$sql = '';
 
 			// Bail if `$values` isn't an array or there aren't at least two values.
@@ -709,10 +710,10 @@ namespace Sandhills {
 				return $sql;
 			}
 
-			$compare = strtoupper( $compare );
+			$compare_type = strtoupper( $compare_type );
 
-			if ( ! in_array( $compare, array( 'BETWEEN', 'NOT BETWEEN' ) ) ) {
-				$compare = 'BETWEEN';
+			if ( ! in_array( $compare_type, array( 'BETWEEN', 'NOT BETWEEN' ) ) ) {
+				$compare_type = 'BETWEEN';
 			}
 
 			$field    = $this->get_current_field();
@@ -732,7 +733,7 @@ namespace Sandhills {
 				return $value;
 			}, $values );
 
-			$sql .= "( `{$field}` {$compare} {$values[0]} AND {$values[1]} )";
+			$sql .= "( `{$field}` {$compare_type} {$values[0]} AND {$values[1]} )";
 
 			return $sql;
 		}
