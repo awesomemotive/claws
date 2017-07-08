@@ -348,7 +348,7 @@ namespace Sandhills {
 		 */
 		public function not_like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
 			$clause = $this->get_current_clause();
-			$sql    = $this->get_like_sql( $values, $callback_or_type, 'NOT LIKE' );
+			$sql    = $this->get_like_sql( $values, $callback_or_type, 'NOT LIKE', $operator );
 
 			$this->clauses_in_progress[ $clause ][] = $sql;
 
@@ -608,17 +608,29 @@ namespace Sandhills {
 		 * @param string          $compare          Comparison to make. Accepts 'LIKE' or 'NOT LIKE'.
 		 * @return string Raw, sanitized SQL.
 		 */
-		protected function get_like_sql( $values, $callback_or_type, $compare ) {
+		protected function get_like_sql( $values, $callback_or_type, $compare, $operator ) {
+			$sql      = '';
 			$callback = $this->get_callback( $callback_or_type );
 			$field    = $this->get_current_field();
+			$values   = is_array( $values ) ? $values : (array) $values;
 			$compare  = strtoupper( $compare );
 
 			if ( ! in_array( $compare, array( 'LIKE', 'NOT LIKE' ) ) ) {
 				$compare = 'LIKE';
 			}
 
-			// Escape values.
-			$sql = "{$field} {$compare} '%%{$values}%%'";
+			$value_count = count( $values );
+
+			$current = 0;
+
+			// Escape values and build the SQL.
+			foreach ( $values as $value ) {
+				$sql .= "{$field} {$compare} '%%" . $this->esc_like( $value ) . "%%'";
+
+				if ( $value_count > 1 && ++$current !== $value_count ) {
+					$sql .= " {$operator} ";
+				}
+			}
 
 			return $sql;
 		}
@@ -768,6 +780,19 @@ namespace Sandhills {
 			 * @param \Sandhills\Claws $this     Current Claws instance.
 			 */
 			return apply_filters( 'claws_validate_compare', $allowed, $operator, $this );
+		}
+
+		/**
+		 * Escapes a value used in a 'LIKE' comparison.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 *
+		 * @param mixed $like LIKE comparison value.
+		 * @return string Escaped value.
+		 */
+		protected function esc_like( $like ) {
+			return addcslashes( $like, '_%\\' );
 		}
 
 		/**
