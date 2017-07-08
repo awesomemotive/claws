@@ -985,6 +985,18 @@ namespace Sandhills {
 		}
 
 		/**
+		 * Retrieves the previous phrase for the given clause.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @return string Previous phrase SQL.
+		 */
+		public function get_previous_phrase( $clause = null ) {
+			return $this->previous_phrase;
+		}
+
+		/**
 		 * Resets the current clause.
 		 *
 		 * @access public
