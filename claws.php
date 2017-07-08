@@ -573,14 +573,7 @@ namespace Sandhills {
 		protected function build_comparison_sql( $values, $compare_type, $operator ) {
 			$sql = '';
 
-			$value_count = count( $values );
-
-			// Start the phrase.
-			if ( $value_count > 1 ) {
-				$sql .= '( ';
-			}
-
-
+			$count   = count( $values );
 			$current = 0;
 			$field   = $this->get_current_field();
 
@@ -593,14 +586,14 @@ namespace Sandhills {
 
 				$sql .= "`{$field}` {$compare_type} {$value}";
 
-				if ( $value_count > 1 && ++$current !== $value_count ) {
+				if ( ++$current !== $count ) {
 					$sql .= " {$operator} ";
 				}
 			}
 
 			// Finish the phrase.
-			if ( $value_count > 1 ) {
-				$sql .= ' )';
+			if ( $count > 1 ) {
+				$sql = '( ' . $sql . ' )';
 			}
 
 			return $sql;
