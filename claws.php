@@ -900,7 +900,6 @@ namespace Sandhills {
 		 * @since  1.0.0
 		 *
 		 * @param string $clause Clause to set as current.
-		 *
 		 * @return \Sandhills\Claws Current claws instance.
 		 */
 		public function set_current_clause( $clause ) {
@@ -932,7 +931,6 @@ namespace Sandhills {
 		 * @since  1.0.0
 		 *
 		 * @param string $field Field to set as current.
-		 *
 		 * @return \Sandhills\Claws Current claws instance.
 		 */
 		public function set_current_field( $field ) {
@@ -953,6 +951,15 @@ namespace Sandhills {
 			return $this->current_field;
 		}
 
+		/**
+		 * Sets the current operator for use in complex phrase building.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $operator Operator to persist between method calls. Accepts 'OR' or 'AND'.
+		 * @return \Sandhills\Claws Current claws instance.
+		 */
 		public function set_current_operator( $operator ) {
 			$operator = strtoupper( $operator );
 
@@ -961,8 +968,18 @@ namespace Sandhills {
 			}
 
 			$this->current_operator = $operator;
+
+			return $this;
 		}
 
+		/**
+		 * Retrieves the current operator (for use in complex phrase building).
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @return string Current operator.
+		 */
 		public function get_current_operator() {
 			return $this->current_operator;
 		}
