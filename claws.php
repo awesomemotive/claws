@@ -639,7 +639,7 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_like_sql( $values, $callback_or_type, $compare, $operator ) {
-			if ( null === $callback_or_type ) ) {
+			if ( null === $callback_or_type ) {
 				$callback_or_type = array( $this, 'esc_like' );
 			}
 
