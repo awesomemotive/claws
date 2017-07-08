@@ -858,6 +858,45 @@ namespace Sandhills {
 		}
 
 		/**
+		 * Adds prepared SQL to the current clause.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 *
+		 * @param string      $sql    Prepared SQL to add to the clause.
+		 * @param null|string $clause Optional. Clause to add the SQL to. Default is the current clause.
+		 */
+		protected function add_clause_sql( $sql, $clause = null ) {
+			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
+				$clause = $this->get_current_clause();
+			}
+
+			$this->previous_phrase = $sql;
+			$this->clauses_in_progress[ $clause ][] = $this->previous_phrase;
+		}
+
+		/**
+		 * Replaces the previous phrase with the given prepared SQL.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 *
+		 * @param string      $sql    Prepared SQL to replace the phrase with.
+		 * @param null|string $clause Optional. Clause to replace the last phrase for. Default is the current clause.
+		 */
+		protected function replace_previous_phrase( $sql, $clause = null ) {
+			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
+				$clause = $this->get_current_clause();
+			}
+
+			// Pop off the last phrase.
+			array_pop( $this->clauses_in_progress[ $clause ] );
+
+			// Replace it with the new one.
+			$this->clauses_in_progress[ $clause ][] = $sql;
+		}
+
+		/**
 		 * Retrieves raw, sanitized SQL for the current clause.
 		 *
 		 * @access public
