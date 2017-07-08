@@ -854,6 +854,17 @@ namespace Sandhills {
 				$clause = $this->get_current_clause();
 			}
 
+			if ( true === $this->amending_previous ) {
+				$operator = $this->get_current_operator();
+
+				$sql = $this->get_previous_phrase() . " {$operator} {$sql}";
+
+				$this->replace_previous_phrase( $sql, $clause );
+
+				// Reset the amendment flag.
+				$this->amending_previous = false;
+			}
+
 			$this->previous_phrase = $sql;
 			$this->clauses_in_progress[ $clause ][] = $this->previous_phrase;
 		}
