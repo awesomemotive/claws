@@ -128,7 +128,7 @@ namespace Sandhills {
 
 			/*
 			 * Prior to PHP 7, reserved keywords could not be used in method names,
-			 * so having an or() method wouldn't be allowed. Using __call() allows
+			 * so having or()/and() methods wouldn't be allowed. Using __call() allows
 			 * us to circumvent that problem.
 			 */
 			switch( $name ) {
