@@ -186,10 +186,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function equals( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '=', $operator );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_comparison_sql( $values, $callback_or_type, '=', $operator );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -209,10 +209,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function doesnt_equal( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '!=', $operator );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_comparison_sql( $values, $callback_or_type, '!=', $operator );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -232,10 +232,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function gt( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '>', $operator );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_comparison_sql( $values, $callback_or_type, '>', $operator );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -255,10 +255,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function lt( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '<', $operator );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_comparison_sql( $values, $callback_or_type, '<', $operator );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -278,10 +278,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function gte( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '>=', $operator );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_comparison_sql( $values, $callback_or_type, '>=', $operator );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -301,10 +301,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function lte( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_comparison_sql( $values, $callback_or_type, '<=', $operator );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_comparison_sql( $values, $callback_or_type, '<=', $operator );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -324,10 +324,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_like_sql( $values, $callback_or_type, 'LIKE' );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_like_sql( $values, $callback_or_type, 'LIKE' );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -347,10 +347,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function not_like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_like_sql( $values, $callback_or_type, 'NOT LIKE' );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_like_sql( $values, $callback_or_type, 'NOT LIKE' );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -370,17 +370,15 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-
 			if ( ! is_array( $values ) ) {
 
 				$this->equals( $values, $callback_or_type, $operator );
 
 			} else {
+				$clause = $this->get_current_clause();
+				$sql    = $this->get_in_sql( $values, $callback_or_type, 'IN' );
 
-				$sql = $this->get_in_sql( $values, $callback_or_type, 'IN' );
-
-				$this->clauses_in_progress[ $current_clause ][] = $sql;
+				$this->clauses_in_progress[ $clause ][] = $sql;
 			}
 
 			return $this;
@@ -401,17 +399,16 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function not_in( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			$current_clause = $this->get_current_clause();
-
 			if ( ! is_array( $values ) ) {
 
 				$this->doesnt_equal( $values, $callback_or_type, $operator );
 
 			} else {
 
-				$sql = $this->get_in_sql( $values, $callback_or_type, 'NOT IN' );
+				$clause = $this->get_current_clause();
+				$sql    = $this->get_in_sql( $values, $callback_or_type, 'NOT IN' );
 
-				$this->clauses_in_progress[ $current_clause ][] = $sql;
+				$this->clauses_in_progress[ $clause ][] = $sql;
 			}
 
 			return $this;
@@ -434,10 +431,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function between( $values, $callback_or_type = 'esc_sql' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_between_sql( $values, $callback_or_type, 'BETWEEN' );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_between_sql( $values, $callback_or_type, 'BETWEEN' );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -455,10 +452,10 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function not_between( $values, $callback_or_type = 'esc_sql' ) {
-			$current_clause = $this->get_current_clause();
-			$sql            = $this->get_between_sql( $values, $callback_or_type, 'NOT BETWEEN' );
+			$clause = $this->get_current_clause();
+			$sql    = $this->get_between_sql( $values, $callback_or_type, 'NOT BETWEEN' );
 
-			$this->clauses_in_progress[ $current_clause ][] = $sql;
+			$this->clauses_in_progress[ $clause ][] = $sql;
 
 			return $this;
 		}
@@ -534,8 +531,7 @@ namespace Sandhills {
 				$sql .= '( ';
 			}
 
-			$current_field = $this->get_current_field();
-			$value_type    = gettype( $values[0] );
+			$field = $this->get_current_field();
 
 			$current = 0;
 
@@ -546,7 +542,7 @@ namespace Sandhills {
 					$value = "'{$value}'";
 				}
 
-				$sql .= "`{$current_field}` {$compare} {$value}";
+				$sql .= "`{$field}` {$compare} {$value}";
 
 				if ( $value_count > 1 && ++$current !== $value_count ) {
 					$sql .= " {$operator} ";
@@ -574,8 +570,7 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_in_sql( $values, $callback_or_type, $compare ) {
-			$current_field  = $this->get_current_field();
-
+			$field    = $this->get_current_field();
 			$callback = $this->get_callback( $callback_or_type );
 			$compare  = strtoupper( $compare );
 
@@ -596,7 +591,7 @@ namespace Sandhills {
 
 			$values = implode( ', ', $values );
 
-			$sql = "{$current_field} {$compare}( {$values} )";
+			$sql = "{$field} {$compare}( {$values} )";
 
 			return $sql;
 		}
@@ -652,8 +647,8 @@ namespace Sandhills {
 				$compare = 'BETWEEN';
 			}
 
-			$current_field = $this->get_current_field();
-			$callback      = $this->get_callback( $callback_or_type );
+			$field    = $this->get_current_field();
+			$callback = $this->get_callback( $callback_or_type );
 
 			$sql = '';
 
@@ -671,7 +666,7 @@ namespace Sandhills {
 				return $value;
 			}, $values );
 
-			$sql .= "( `{$current_field}` {$compare} {$values[0]} AND {$values[1]} )";
+			$sql .= "( `{$field}` {$compare} {$values[0]} AND {$values[1]} )";
 
 			return $sql;
 		}
