@@ -733,43 +733,12 @@ namespace Sandhills {
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param string|callable $type Standard type to retrieve a callback for, or an already-callable.
+		 * @param string|callable $callback_or_type Standard type to retrieve a callback for, or an callback.
 		 * @return callable Callback.
 		 */
-		public function get_callback( $type ) {
+		public function get_callback( $callback_or_type ) {
 
-			if ( is_callable( $type ) ) {
-
-				$callback = $type;
-
-			} else {
-
-				switch( $type ) {
-
-					case 'int':
-					case 'integer':
-						$callback = 'intval';
-						break;
-
-					case 'float':
-					case 'double':
-						$callback = 'floatval';
-						break;
-
-					case 'string':
-						$callback = 'sanitize_text_field';
-						break;
-
-					case 'key':
-						$callback = 'sanitize_key';
-						break;
-
-					default:
-						$callback = 'esc_sql';
-						break;
-				}
-
-			}
+			$callback = is_callable( $callback_or_type ) ? $callback_or_type : $this->get_callback_for_type( $callback_or_type );
 
 			/**
 			 * Filters the callback to use for a given type.
@@ -781,6 +750,48 @@ namespace Sandhills {
 			 * @param \Sandhills\Claws $this     Current Sidebar instance.
 			 */
 			return apply_filters( 'claws_callback_for_type', $callback, $type, $this );
+		}
+
+		/**
+		 * Determines the right callback for a given type of value.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $type Type of value to retrieve a callback for.
+		 * @return string|callable Callback string.
+		 */
+		public function get_callback_for_type( $type ) {
+			switch( $type ) {
+
+				case 'int':
+				case 'integer':
+					$callback = 'intval';
+					break;
+
+				case 'float':
+				case 'double':
+					$callback = 'floatval';
+					break;
+
+				case 'string':
+					$callback = 'sanitize_text_field';
+					break;
+
+				case 'key':
+					$callback = 'sanitize_key';
+					break;
+
+				case 'esc_like':
+					$callback = array( $this, 'esc_like' );
+					break;
+
+				default:
+					$callback = 'esc_sql';
+					break;
+			}
+
+			return $callback;
 		}
 
 		/**
