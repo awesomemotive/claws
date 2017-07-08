@@ -837,9 +837,7 @@ namespace Sandhills {
 		 * @param null|string $clause Optional. Clause to replace the last phrase for. Default is the current clause.
 		 */
 		protected function replace_previous_phrase( $sql, $clause = null ) {
-			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
-				$clause = $this->get_current_clause();
-			}
+			$clause = $this->get_clause( $clause );
 
 			// Pop off the last phrase.
 			array_pop( $this->clauses_in_progress[ $clause ] );
@@ -858,9 +856,7 @@ namespace Sandhills {
 		 * @param null|string $clause Optional. Clause to add the SQL to. Default is the current clause.
 		 */
 		public function add_clause_sql( $sql, $clause = null ) {
-			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
-				$clause = $this->get_current_clause();
-			}
+			$clause = $this->get_clause( $clause );
 
 			if ( true === $this->amending_previous ) {
 				$operator = $this->get_current_operator();
@@ -894,9 +890,7 @@ namespace Sandhills {
 		public function get_sql( $clause = null, $reset_vars = true ) {
 			$sql = '';
 
-			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
-				$clause = $this->get_current_clause();
-			}
+			$clause = $this->get_clause( $clause );
 
 			if ( isset( $this->clauses_in_progress[ $clause ] ) ) {
 				$sql .= strtoupper( $clause );
@@ -944,10 +938,15 @@ namespace Sandhills {
 		 * @access public
 		 * @since  1.0.0
 		 *
+		 * @param null|string $clause Optional. Clause to retrieve. Default is the current clause.
 		 * @return string Current clause name.
 		 */
-		public function get_current_clause() {
-			return $this->current_clause;
+		public function get_clause( $clause = null ) {
+			if ( ! isset( $clause ) || ( isset( $clause ) && ! in_array( $clause, $this->allowed_clauses, true ) ) ) {
+				$clause = $this->current_clause;
+			}
+
+			return $clause;
 		}
 
 		/**
@@ -1014,10 +1013,7 @@ namespace Sandhills {
 			$this->set_current_operator( $operator );
 			$this->amending_previous = true;
 
-			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
-				$clause = $this->get_current_clause();
-			}
-
+			$clause = $this->get_clause( $clause );
 			$chunks = $this->clauses_in_progress[ $clause ];
 
 			if ( ! empty( $chunks ) ) {
