@@ -179,35 +179,54 @@ namespace Sandhills {
 
 			// Handle shorthand comparison phrases.
 			if ( isset( $compare ) && isset( $values ) ) {
-				switch( $compare ) {
-					case '!=':
-						return $this->doesnt_equal( $values, $callback_or_type );
-						break;
 
-					case '<':
-						return $this->lt( $values, $callback_or_type );
-						break;
+				$callback = $this->get_callback( $callback_or_type );
 
-					case '>':
-						return $this->gt( $values, $callback_or_type );
-						break;
-
-					case '<=':
-						return $this->lte( $values, $callback_or_type );
-						break;
-
-					case '>=':
-						return $this->gte( $values, $callback_or_type );
-						break;
-
-					case '=':
-					default:
-						return $this->equals( $values, $callback_or_type );
-						break;
-				}
+				$this->compare( $compare, $values, $callback );
 			}
 
 			return $this;
+		}
+
+		/**
+		 * Handles delegating short-hand value comparison phrases.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string           $type     Type of comparison. Accepts '=', '!=', '<', '>', '>=', or '<='.
+		 * @param string|int|array $values   Single value(s) of varying type, or an array of values.
+		 * @param callable         $callback Callback to pass to the comparison method.
+		 */
+		public function compare( $type, $values, $callback ) {
+			switch( $type ) {
+
+				case '!=':
+					return $this->doesnt_equal( $values, $callback );
+					break;
+
+				case '<':
+					return $this->lt( $values, $callback );
+					break;
+
+				case '>':
+					return $this->gt( $values, $callback );
+					break;
+
+				case '<=':
+					return $this->lte( $values, $callback );
+					break;
+
+				case '>=':
+					return $this->gte( $values, $callback );
+					break;
+
+				case '=':
+				default:
+					return $this->equals( $values, $callback );
+					break;
+
+			}
 		}
 
 		/**
