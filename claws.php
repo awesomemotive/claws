@@ -561,13 +561,29 @@ namespace Sandhills {
 				$compare = '=';
 			}
 
-			$sql      = '';
 			$callback = $this->get_callback( $callback_or_type );
 			$operator = $this->get_operator( $operator );
 			$values   = $this->prepare_values( $values );
 
 			// Sanitize the values and built the SQL.
 			$values = array_map( $callback, $values );
+
+			return $this->build_comparison_sql( $values, $compare, $operator );
+		}
+
+		/**
+		 * Builds and retrieves the actual comparison SQL.
+		 *
+		 * @acccess protected
+		 * @since   1.0.0
+		 *
+		 * @param array  $values   Array of values.
+		 * @param string $compare  Type of comparison.
+		 * @param string $operator Operator to use between value comparisons.
+		 * @return string Comparison SQL.
+		 */
+		protected function build_comparison_sql( $values, $compare, $operator ) {
+			$sql = '';
 
 			$value_count = count( $values );
 
@@ -576,9 +592,9 @@ namespace Sandhills {
 				$sql .= '( ';
 			}
 
-			$field = $this->get_current_field();
 
 			$current = 0;
+			$field   = $this->get_current_field();
 
 			// Loop through the values and bring in $operator if needed.
 			foreach ( $values as $value ) {
