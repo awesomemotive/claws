@@ -680,9 +680,11 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_between_sql( $values, $callback_or_type, $compare ) {
+			$sql = '';
+
 			// Bail if `$values` isn't an array or there aren't at least two values.
 			if ( ! is_array( $values ) || count( $values ) < 2 ) {
-				return $this;
+				return $sql;
 			}
 
 			$compare = strtoupper( $compare );
@@ -693,8 +695,6 @@ namespace Sandhills {
 
 			$field    = $this->get_current_field();
 			$callback = $this->get_callback( $callback_or_type );
-
-			$sql = '';
 
 			// Grab the first two values in the array.
 			$values = array_slice( $values, 0, 2 );
