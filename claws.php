@@ -1020,7 +1020,7 @@ namespace Sandhills {
 		 *
 		 * @return string Previous phrase SQL.
 		 */
-		public function get_previous_phrase( $clause = null ) {
+		public function get_previous_phrase() {
 			return $this->previous_phrase;
 		}
 
