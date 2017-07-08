@@ -171,11 +171,8 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function where( $field, $compare = null, $values = null, $callback_or_type = 'esc_sql' ) {
-			if ( $field !== $this->get_current_field() ) {
-				$this->set_current_field( $field );
-			}
-
 			$this->set_current_clause( 'where' );
+			$this->set_current_field( $field );
 
 			// Handle shorthand comparison phrases.
 			if ( isset( $compare ) && isset( $values ) ) {
@@ -996,7 +993,9 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current claws instance.
 		 */
 		public function set_current_field( $field ) {
-			$this->current_field = sanitize_key( $field );
+			if ( $field !== $this->get_current_field() ) {
+				$this->current_field = sanitize_key( $field );
+			}
 
 			return $this;
 		}
