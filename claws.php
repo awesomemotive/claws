@@ -538,15 +538,15 @@ namespace Sandhills {
 		 * @param array            $values           Array of values to compare.
 		 * @param string|callable  $callback_or_type Sanitization callback to pass values through, or shorthand
 		 *                                           types to use preset callbacks.
-		 * @param string           $compare          Comparison to make. Accepts '=', '!=', '<', '>', '<=', or '>='.
+		 * @param string           $compare_type     Comparison type to make. Accepts '=', '!=', '<', '>', '<=', or '>='.
 		 *                                           Default '='.
 		 * @param string           $operator         Optional. Operator to use between multiple sets of value comparisons.
 		 *                                           Accepts 'OR' or 'AND'. Default 'OR'.
 		 * @return string Raw, sanitized SQL.
 		 */
-		protected function get_comparison_sql( $values, $callback_or_type, $compare, $operator = 'OR' ) {
-			if ( ! in_array( $compare, array( '=', '!=', '<', '>', '<=', '>=' ) ) ) {
-				$compare = '=';
+		protected function get_comparison_sql( $values, $callback_or_type, $compare_type, $operator = 'OR' ) {
+			if ( ! in_array( $compare_type, array( '=', '!=', '<', '>', '<=', '>=' ) ) ) {
+				$compare_type = '=';
 			}
 
 			$callback = $this->get_callback( $callback_or_type );
@@ -556,7 +556,7 @@ namespace Sandhills {
 			// Sanitize the values and built the SQL.
 			$values = array_map( $callback, $values );
 
-			return $this->build_comparison_sql( $values, $compare, $operator );
+			return $this->build_comparison_sql( $values, $compare_type, $operator );
 		}
 
 		/**
@@ -565,12 +565,12 @@ namespace Sandhills {
 		 * @acccess protected
 		 * @since   1.0.0
 		 *
-		 * @param array  $values   Array of values.
-		 * @param string $compare  Type of comparison.
-		 * @param string $operator Operator to use between value comparisons.
+		 * @param array  $values       Array of values.
+		 * @param string $compare_type Type of comparison.
+		 * @param string $operator     Operator to use between value comparisons.
 		 * @return string Comparison SQL.
 		 */
-		protected function build_comparison_sql( $values, $compare, $operator ) {
+		protected function build_comparison_sql( $values, $compare_type, $operator ) {
 			$sql = '';
 
 			$value_count = count( $values );
@@ -591,7 +591,7 @@ namespace Sandhills {
 					$value = "'{$value}'";
 				}
 
-				$sql .= "`{$field}` {$compare} {$value}";
+				$sql .= "`{$field}` {$compare_type} {$value}";
 
 				if ( $value_count > 1 && ++$current !== $value_count ) {
 					$sql .= " {$operator} ";
