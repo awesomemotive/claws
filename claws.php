@@ -425,6 +425,7 @@ namespace Sandhills {
 				$this->equals( $values, $callback_or_type, $operator );
 
 			} else {
+
 				$sql = $this->get_in_sql( $values, $callback_or_type, 'IN' );
 
 				$this->add_clause_sql( $sql );
@@ -565,7 +566,7 @@ namespace Sandhills {
 			$sql      = '';
 			$callback = $this->get_callback( $callback_or_type );
 			$operator = $this->get_operator( $operator );
-			$values   = is_array( $values ) ? $values : (array) $values;
+			$values   = $this->prepare_values( $values );
 
 			// Sanitize the values and built the SQL.
 			$values = array_map( $callback, $values );
@@ -662,7 +663,7 @@ namespace Sandhills {
 			$sql      = '';
 			$callback = $this->get_callback( $callback_or_type );
 			$field    = $this->get_current_field();
-			$values   = is_array( $values ) ? $values : (array) $values;
+			$values   = $this->prepare_values( $values );
 			$compare  = strtoupper( $compare );
 
 			if ( ! in_array( $compare, array( 'LIKE', 'NOT LIKE' ) ) ) {
@@ -844,6 +845,22 @@ namespace Sandhills {
 		 */
 		protected function esc_like( $like ) {
 			return addcslashes( $like, '_%\\' );
+		}
+
+		/**
+		 * Ensures values are in array form.
+		 *
+		 * Seems silly, but anywhere blatant duplication can be reduced is a win.
+		 *
+		 * @access protected
+		 * @since  1.0.0
+		 * @param $values
+		 *
+		 * @param mixed|array Single values of varying type or an array of values.
+		 * @return array Array of values.
+		 */
+		protected function prepare_values( $values ) {
+			return is_array( $values ) ? $values : (array) $values;
 		}
 
 		/**
