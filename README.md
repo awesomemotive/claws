@@ -3,4 +3,4 @@
 [![Build Status](https://img.shields.io/travis/AffiliateWP/claws/master.svg?style=flat-square)](https://travis-ci.org/AffiliateWP/claws)
 
 # Claws
-A library that standardizes building SQL clauses used in custom WordPress database queries.
+A library to standardize building SQL clauses used in custom WordPress database queries.
