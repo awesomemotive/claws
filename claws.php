@@ -134,7 +134,7 @@ namespace Sandhills {
 			switch( $name ) {
 
 				case 'or':
-					$clause = isset( $args[1] ) ? $args[1] : null;
+					$clause = isset( $args[0] ) ? $args[0] : null;
 
 					// Shared logic.
 					$this->__set_current_operator( 'OR', $clause );
@@ -143,7 +143,7 @@ namespace Sandhills {
 					break;
 
 				case 'and':
-					$clause = isset( $args[1] ) ? $args[1] : null;
+					$clause = isset( $args[0] ) ? $args[0] : null;
 
 					// Shared logic.
 					$this->__set_current_operator( 'AND', $clause );
