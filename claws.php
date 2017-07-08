@@ -902,7 +902,6 @@ namespace Sandhills {
 				$sql .= strtoupper( $clause );
 
 				$current = 0;
-				$count   = count( $this->clauses_in_progress[ $clause ] );
 
 				foreach ( $this->clauses_in_progress[ $clause ] as $chunk ) {
 					if ( ++$current === 1 ) {
