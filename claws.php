@@ -308,13 +308,13 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'esc_sql'.
+		 *                                          types to use preset callbacks. Default `Claws->esc_like()`.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 *
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
-		public function like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+		public function like( $values, $callback_or_type = null, $operator = 'OR' ) {
 			$sql = $this->get_like_sql( $values, $callback_or_type, 'LIKE' );
 
 			$this->add_clause_sql( $sql );
@@ -330,13 +330,13 @@ namespace Sandhills {
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
-		 *                                          types to use preset callbacks. Default 'esc_sql'.
+		 *                                          types to use preset callbacks. Default is `Claws->esc_like()`.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
 		 *                                          building the expression. Default 'OR'.
 		 *
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
-		public function not_like( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+		public function not_like( $values, $callback_or_type = null, $operator = 'OR' ) {
 			$sql = $this->get_like_sql( $values, $callback_or_type, 'NOT LIKE', $operator );
 
 			$this->add_clause_sql( $sql );
@@ -639,6 +639,10 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_like_sql( $values, $callback_or_type, $compare, $operator ) {
+			if ( null === $callback_or_type ) ) {
+				$callback_or_type = array( $this, 'esc_like' );
+			}
+
 			$sql      = '';
 			$callback = $this->get_callback( $callback_or_type );
 			$field    = $this->get_current_field();
@@ -649,13 +653,14 @@ namespace Sandhills {
 				$compare = 'LIKE';
 			}
 
+			$values = array_map( $callback, $values );
 			$value_count = count( $values );
 
 			$current = 0;
 
 			// Escape values and build the SQL.
 			foreach ( $values as $value ) {
-				$sql .= "{$field} {$compare} '%%" . $this->esc_like( $value ) . "%%'";
+				$sql .= "{$field} {$compare} '%%{$value}%%'";
 
 				if ( $value_count > 1 && ++$current !== $value_count ) {
 					$sql .= " {$operator} ";
