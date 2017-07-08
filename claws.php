@@ -6,6 +6,8 @@ namespace Sandhills {
 	 * interacting with WordPress' wp-db class for custom queries.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @method \Sandhills\Claws or( null|string $clause )
 	 */
 	class Claws {
 
@@ -110,6 +112,35 @@ namespace Sandhills {
 		 */
 		public function version() {
 			return $this->version;
+		}
+
+		/**
+		 * Handles calling pseudo-methods.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param string $name Method name.
+		 * @param array  $args Method arguments.
+		 */
+		public function __call( $name, $args ) {
+			/*
+			 * Prior to PHP 7, reserved keywords could not be used in method names,
+			 * so having an or() method wouldn't be allowed. Using __call() allows
+			 * us to circumvent that problem.
+			 */
+			if ( 'or' === $name ) {
+				// $clause
+				$clause = isset( $args[0] ) ? $args[0] : null;
+
+				// Shared logic.
+				$this->and( $clause );
+
+				// Overwrite the current .operator.
+				$this->set_current_operator( 'OR' );
+
+				return $this;
+			}
 		}
 
 		/**
@@ -482,33 +513,6 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Flags the previously-stored phrase to be amended and appended with an 'OR' operator.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @param null|string $clause Optional. Clause to amend the previous chunk for.
-		 *                            Default is the current clause.
-		 * @return \Sandhills\Claws Current Claws instance.
-		 */
-		public function or( $clause = null ) {
-			$this->amending_previous = true;
-			$this->set_current_operator( 'OR' );
-
-			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
-				$clause = $this->get_current_clause();
-			}
-
-			$chunks = $this->clauses_in_progress[ $clause ];
-
-			if ( ! empty( $chunks ) ) {
-				$this->previous_phrase = end( $chunks );
-			}
-
-			return $this;
-		}
-
-		/**
 		 * Flags the previously-stored phrase to be amended and appended with an 'AND' operator.
 		 *
 		 * @access public
@@ -519,9 +523,18 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function and( $clause = null ) {
-			$this->or( $clause );
-
+			$this->amending_previous = true;
 			$this->set_current_operator( 'AND' );
+
+			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
+				$clause = $this->get_current_clause();
+			}
+
+			$chunks = $this->clauses_in_progress[ $clause ];
+
+			if ( ! empty( $chunks ) ) {
+				$this->previous_phrase = end( $chunks );
+			}
 
 			return $this;
 		}
