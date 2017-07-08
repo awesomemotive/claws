@@ -957,7 +957,7 @@ namespace Sandhills {
 		 * @return string Current clause name.
 		 */
 		public function get_clause( $clause = null ) {
-			if ( ! isset( $clause ) || ( isset( $clause ) && ! in_array( $clause, $this->allowed_clauses, true ) ) ) {
+			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
 				$clause = $this->current_clause;
 			}
 
