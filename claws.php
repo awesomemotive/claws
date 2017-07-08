@@ -197,36 +197,37 @@ namespace Sandhills {
 		 * @param string           $type     Type of comparison. Accepts '=', '!=', '<', '>', '>=', or '<='.
 		 * @param string|int|array $values   Single value(s) of varying type, or an array of values.
 		 * @param callable         $callback Callback to pass to the comparison method.
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function compare( $type, $values, $callback ) {
 			switch( $type ) {
-
 				case '!=':
-					return $this->doesnt_equal( $values, $callback );
+					$this->doesnt_equal( $values, $callback );
 					break;
 
 				case '<':
-					return $this->lt( $values, $callback );
+					$this->lt( $values, $callback );
 					break;
 
 				case '>':
-					return $this->gt( $values, $callback );
+					$this->gt( $values, $callback );
 					break;
 
 				case '<=':
-					return $this->lte( $values, $callback );
+					$this->lte( $values, $callback );
 					break;
 
 				case '>=':
-					return $this->gte( $values, $callback );
+					$this->gte( $values, $callback );
 					break;
 
 				case '=':
 				default:
-					return $this->equals( $values, $callback );
+					$this->equals( $values, $callback );
 					break;
-
 			}
+
+			return $this;
 		}
 
 		/**
