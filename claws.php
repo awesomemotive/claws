@@ -749,7 +749,7 @@ namespace Sandhills {
 			 * @param string           $type     Type to retrieve a callback for.
 			 * @param \Sandhills\Claws $this     Current Sidebar instance.
 			 */
-			return apply_filters( 'claws_callback_for_type', $callback, $type, $this );
+			return apply_filters( 'claws_callback_for_type', $callback, $callback_or_type, $this );
 		}
 
 		/**
