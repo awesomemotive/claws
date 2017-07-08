@@ -169,33 +169,6 @@ namespace Sandhills {
 		}
 
 		/**
-		 * Appends raw SQL to the given clause.
-		 *
-		 * Important: Sanitization and escaping should be handled before passing SQL to this method.
-		 *
-		 * This method is for the case where you need SQL that can't easily be created using one of
-		 * the other generation methods.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 * @todo Probably remove as it's moot with add_clause_sql() used by core now.
-		 *
-		 * @param string      $sql    Raw, sanitized and escaped SQL.
-		 * @param null|string $clause Optional. Clause to append the SQL to. Default is the current clause.
-		 *
-		 * @return \Sandhills\Claws Current Claws instance.
-		 */
-		public function raw_sql( $sql, $clause = null ) {
-			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
-				$clause = $this->get_current_clause();
-			}
-
-			$this->add_clause_sql( $sql, $clause );
-
-			return $this;
-		}
-
-		/**
 		 * Handles '=' value comparison.
 		 *
 		 * @access public
