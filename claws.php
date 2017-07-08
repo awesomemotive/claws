@@ -489,6 +489,7 @@ namespace Sandhills {
 		 *
 		 * @param null|string $clause Optional. Clause to amend the previous chunk for.
 		 *                            Default is the current clause.
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function or( $clause = null ) {
 			$this->amending_previous = true;
@@ -503,6 +504,8 @@ namespace Sandhills {
 			if ( ! empty( $chunks ) ) {
 				$this->previous_phrase = end( $chunks );
 			}
+
+			return $this;
 		}
 
 		/**
@@ -513,11 +516,14 @@ namespace Sandhills {
 		 *
 		 * @param null|string $clause Optional. Clause to amend the previous chunk for.
 		 *                            Default is the current clause.
+		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function and( $clause = null ) {
 			$this->or( $clause );
 
 			$this->set_current_operator( 'AND' );
+
+			return $this;
 		}
 
 		/**
@@ -609,7 +615,7 @@ namespace Sandhills {
 				if ( 'string' === gettype( $value ) ) {
 					$value = "'{$value}'";
 				}
-				
+
 				return $value;
 			}, $values );
 
