@@ -2,7 +2,7 @@
 namespace Sandhills {
 
 	/**
-	 * Standalone library to provide a variety of database sanitization helpers when
+	 * Implements a library to provide a variety of database sanitization helpers when
 	 * interacting with WordPress' wp-db class for custom queries.
 	 *
 	 * @since 1.0.0
@@ -13,7 +13,7 @@ namespace Sandhills {
 	class Claws {
 
 		/**
-		 * Sidecar version.
+		 * Claws version.
 		 *
 		 * @access private
 		 * @since  1.0.0
