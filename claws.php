@@ -987,11 +987,7 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current claws instance.
 		 */
 		public function set_current_operator( $operator ) {
-			$operator = strtoupper( $operator );
-
-			if ( ! in_array( $operator, array( 'OR', 'AND' ) ) ) {
-				$operator = 'OR';
-			}
+			$operator = $this->get_operator( $operator );
 
 			$this->current_operator = $operator;
 
