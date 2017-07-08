@@ -8,6 +8,7 @@ namespace Sandhills {
 	 * @since 1.0.0
 	 *
 	 * @method \Sandhills\Claws or( null|string $clause )
+	 * @method \Sandhills\Claws and( null|string $clause )
 	 */
 	class Claws {
 
@@ -124,23 +125,33 @@ namespace Sandhills {
 		 * @param array  $args Method arguments.
 		 */
 		public function __call( $name, $args ) {
+
 			/*
 			 * Prior to PHP 7, reserved keywords could not be used in method names,
 			 * so having an or() method wouldn't be allowed. Using __call() allows
 			 * us to circumvent that problem.
 			 */
-			if ( 'or' === $name ) {
-				// $clause
-				$clause = isset( $args[0] ) ? $args[0] : null;
+			switch( $name ) {
 
-				// Shared logic.
-				$this->and( $clause );
+				case 'or':
+					$clause = isset( $args[1] ) ? $args[1] : null;
 
-				// Overwrite the current .operator.
-				$this->set_current_operator( 'OR' );
+					// Shared logic.
+					$this->__set_current_operator( 'OR', $clause );
 
-				return $this;
+					return $this;
+					break;
+
+				case 'and':
+					$clause = isset( $args[1] ) ? $args[1] : null;
+
+					// Shared logic.
+					$this->__set_current_operator( 'AND', $clause );
+
+					return $this;
+					break;
 			}
+
 		}
 
 		/**
@@ -509,33 +520,6 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function not_exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			return $this;
-		}
-
-		/**
-		 * Flags the previously-stored phrase to be amended and appended with an 'AND' operator.
-		 *
-		 * @access public
-		 * @since  1.0.0
-		 *
-		 * @param null|string $clause Optional. Clause to amend the previous chunk for.
-		 *                            Default is the current clause.
-		 * @return \Sandhills\Claws Current Claws instance.
-		 */
-		public function and( $clause = null ) {
-			$this->amending_previous = true;
-			$this->set_current_operator( 'AND' );
-
-			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
-				$clause = $this->get_current_clause();
-			}
-
-			$chunks = $this->clauses_in_progress[ $clause ];
-
-			if ( ! empty( $chunks ) ) {
-				$this->previous_phrase = end( $chunks );
-			}
-
 			return $this;
 		}
 
@@ -1011,6 +995,39 @@ namespace Sandhills {
 			}
 
 			$this->current_operator = $operator;
+
+			return $this;
+		}
+
+		/**
+		 * Flags the previously-stored phrase to be amended and appended with the given operator.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @param null|string $clause Optional. Clause to amend the previous chunk for.
+		 *                            Default is the current clause.
+		 * @return \Sandhills\Claws Current Claws instance.
+		 */
+		private function __set_current_operator( $operator, $clause ) {
+			$operator = strtoupper( $operator );
+
+			if ( ! in_array( $operator, array( 'OR', 'AND' ) ) ) {
+				$operator = 'OR';
+			}
+
+			$this->set_current_operator( $operator );
+			$this->amending_previous = true;
+
+			if ( ! isset( $clause ) || ! in_array( $clause, $this->allowed_clauses, true ) ) {
+				$clause = $this->get_current_clause();
+			}
+
+			$chunks = $this->clauses_in_progress[ $clause ];
+
+			if ( ! empty( $chunks ) ) {
+				$this->previous_phrase = end( $chunks );
+			}
 
 			return $this;
 		}
