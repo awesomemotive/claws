@@ -360,7 +360,7 @@ namespace Sandhills {
 		 *
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
-		public function like( $values, $callback_or_type = '', $operator = 'OR' ) {
+		public function like( $values, $callback_or_type = 'esc_like', $operator = 'OR' ) {
 			$sql = $this->get_like_sql( $values, $callback_or_type, 'LIKE', $operator );
 
 			$this->add_clause_sql( $sql );
@@ -382,7 +382,7 @@ namespace Sandhills {
 		 *
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
-		public function not_like( $values, $callback_or_type = '', $operator = 'OR' ) {
+		public function not_like( $values, $callback_or_type = 'esc_like', $operator = 'OR' ) {
 			$sql = $this->get_like_sql( $values, $callback_or_type, 'NOT LIKE', $operator );
 
 			$this->add_clause_sql( $sql );
@@ -652,10 +652,6 @@ namespace Sandhills {
 		 */
 		protected function get_like_sql( $values, $callback_or_type, $compare_type, $operator ) {
 			$sql = '';
-
-			if ( null === $callback_or_type ) {
-				$callback_or_type = array( $this, 'esc_like' );
-			}
 
 			$callback     = $this->get_callback( $callback_or_type );
 			$field        = $this->get_current_field();
