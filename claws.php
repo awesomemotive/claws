@@ -507,7 +507,7 @@ namespace Sandhills {
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
 		public function exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
-			return $this;
+			return $this->equals( $values, $callback_or_type, $operator );
 		}
 
 		/**
@@ -516,7 +516,6 @@ namespace Sandhills {
 		 * @access public
 		 * @since  1.0.0
 		 *
-		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
 		 * @param string          $operator         Optional. If `$value` is an array, whether to use 'OR' or 'AND' when
@@ -524,7 +523,11 @@ namespace Sandhills {
 		 *
 		 * @return \Sandhills\Claws Current Claws instance.
 		 */
-		public function not_exists( $values, $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+		public function not_exists( $callback_or_type = 'esc_sql', $operator = 'OR' ) {
+			$sql = $this->build_comparison_sql( array( '' ), 'IS NULL', $operator );
+
+			$this->add_clause_sql( $sql );
+
 			return $this;
 		}
 
@@ -580,7 +583,7 @@ namespace Sandhills {
 			// Loop through the values and bring in $operator if needed.
 			foreach ( $values as $value ) {
 
-				if ( 'string' === gettype( $value ) ) {
+				if ( 'string' === gettype( $value ) && ! empty( $value ) ) {
 					$value = "'{$value}'";
 				}
 
