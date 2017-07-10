@@ -6,7 +6,7 @@ When contributing please ensure you follow the guidelines below so that we can k
 
 ## Getting Started
 
-* __Do not report potential security vulnerabilities here. Contact our security privately via [pippinsplugins.com/plugin-support](https://pippinsplugins.com/plugin-support/).__
+* __Do not report potential security vulnerabilities here. Contact our security team privately via [pippinsplugins.com/plugin-support](https://pippinsplugins.com/plugin-support/).__
 * Submit a ticket for your issue, assuming one does not already exist.
   * Raise it on our [Issue Tracker](https://github.com/sandhillsdevelopment/claws/issues)
   * Clearly describe the issue including steps to reproduce the bug.
