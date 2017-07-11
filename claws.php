@@ -636,7 +636,7 @@ namespace Sandhills {
 
 			$values = implode( ', ', $values );
 
-			$sql = "{$field} {$compare_type}( {$values} )";
+			$sql = "`{$field}` {$compare_type}( {$values} )";
 
 			return $sql;
 		}
@@ -672,7 +672,7 @@ namespace Sandhills {
 
 			// Escape values and build the SQL.
 			foreach ( $values as $value ) {
-				$sql .= "{$field} {$compare_type} '%%{$value}%%'";
+				$sql .= "`{$field}` {$compare_type} '%%{$value}%%'";
 
 				if ( $value_count > 1 && ++$current !== $value_count ) {
 					$sql .= " {$operator} ";
