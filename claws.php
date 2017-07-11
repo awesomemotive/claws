@@ -574,6 +574,8 @@ namespace Sandhills {
 		 * @return string Comparison SQL.
 		 */
 		protected function build_comparison_sql( $values, $compare_type, $operator ) {
+			global $wpdb;
+
 			$sql = '';
 
 			$count   = count( $values );
@@ -587,7 +589,7 @@ namespace Sandhills {
 					$value = "'{$value}'";
 				}
 
-				$sql .= "`{$field}` {$compare_type} {$value}";
+				$sql .= $wpdb->prepare( "`{$field}` {$compare_type} %s", $value );
 
 				if ( ++$current !== $count ) {
 					$sql .= " {$operator} ";
@@ -615,6 +617,8 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_in_sql( $values, $callback_or_type, $compare_type ) {
+			global $wpdb;
+
 			$field    = $this->get_current_field();
 			$callback = $this->get_callback( $callback_or_type );
 			$compare_type  = strtoupper( $compare_type );
@@ -623,22 +627,11 @@ namespace Sandhills {
 				$compare_type = 'IN';
 			}
 
-			// Escape values.
-			$values = array_map( function( $value ) use ( $callback ) {
-				$value = call_user_func( $callback, $value );
+			$values = array_map( $callback, $values );
 
-				if ( 'string' === gettype( $value ) ) {
-					$value = "'{$value}'";
-				}
+			$sql = "`{$field}` {$compare_type}" . '(' . substr( str_repeat( ',%s', count( $values ) ), 1 ) . ')';
 
-				return $value;
-			}, $values );
-
-			$values = implode( ', ', $values );
-
-			$sql = "`{$field}` {$compare_type}( {$values} )";
-
-			return $sql;
+			return $wpdb->prepare( $sql, $values );
 		}
 
 		/**
@@ -672,6 +665,8 @@ namespace Sandhills {
 
 			// Escape values and build the SQL.
 			foreach ( $values as $value ) {
+				$value = $wpdb->prepare( '%s', $value );
+
 				$sql .= "`{$field}` {$compare_type} '%%{$value}%%'";
 
 				if ( $value_count > 1 && ++$current !== $value_count ) {
@@ -695,6 +690,8 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_between_sql( $values, $callback_or_type, $compare_type ) {
+			global $wpdb;
+
 			$sql = '';
 
 			// Bail if `$values` isn't an array or there aren't at least two values.
@@ -715,19 +712,20 @@ namespace Sandhills {
 			$values = array_slice( $values, 0, 2 );
 
 			// Sanitize the values according to the callback and cast dates.
-			$values = array_map( function( $value ) use ( $callback ) {
+			$values = array_map( function( $value ) use ( $callback, $wpdb ) {
 				$value = call_user_func( $callback, $value );
 
 				if ( false !== strpos( $value, ':' ) ) {
-					$value = "CAST( '{$value}' AS DATE)";
+					$value = $wpdb->prepare( '%s', $value );
+					$value = "CAST( {$value} AS DATE)";
 				}
 
 				return $value;
 			}, $values );
 
-			$sql .= "( `{$field}` {$compare_type} {$values[0]} AND {$values[1]} )";
+			$sql .= "( `{$field}` {$compare_type} %s AND %s )";
 
-			return $sql;
+			return $wpdb->prepare( $sql, $values );
 		}
 
 		/**
