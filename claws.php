@@ -584,12 +584,15 @@ namespace Sandhills {
 
 			// Loop through the values and bring in $operator if needed.
 			foreach ( $values as $value ) {
+				$type = $this->get_cast_for_type( gettype( $value ) );
 
-				if ( 'string' === gettype( $value ) && ! empty( $value ) ) {
-					$value = "'{$value}'";
+				$value = $wpdb->prepare( '%s', $value );
+
+				if ( 'CHAR' !== $type ) {
+					$value = "CAST( {$value} AS {$type} )";
 				}
 
-				$sql .= $wpdb->prepare( "`{$field}` {$compare_type} %s", $value );
+				$sql .= "`{$field}` {$compare_type} {$value}";
 
 				if ( ++$current !== $count ) {
 					$sql .= " {$operator} ";
@@ -617,8 +620,6 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_in_sql( $values, $callback_or_type, $compare_type ) {
-			global $wpdb;
-
 			$field    = $this->get_current_field();
 			$callback = $this->get_callback( $callback_or_type );
 			$compare_type  = strtoupper( $compare_type );
@@ -627,11 +628,22 @@ namespace Sandhills {
 				$compare_type = 'IN';
 			}
 
-			$values = array_map( $callback, $values );
+			// Escape values.
+			$values = array_map( function( $value ) use ( $callback ) {
+				$value = call_user_func( $callback, $value );
 
-			$sql = "`{$field}` {$compare_type}" . '(' . substr( str_repeat( ',%s', count( $values ) ), 1 ) . ')';
+				if ( 'string' === gettype( $value ) ) {
+					$value = "'{$value}'";
+				}
 
-			return $wpdb->prepare( $sql, $values );
+				return $value;
+			}, $values );
+
+			$values = implode( ', ', $values );
+
+			$sql = "{$field} {$compare_type}( {$values} )";
+
+			return $sql;
 		}
 
 		/**
@@ -793,6 +805,35 @@ namespace Sandhills {
 			}
 
 			return $callback;
+		}
+
+		/**
+		 * Retrieves the CAST value for a given value type.
+		 *
+		 * @access public
+		 * @since  1.0.0
+		 *
+		 * @see WP_Meta_Query::get_cast_for_type()
+		 *
+		 * @param string $type Value type (as derived from gettype()).
+		 * @return string MySQL-ready CAST type.
+		 */
+		public function get_cast_for_type( $type ) {
+			$type = strtoupper( $type );
+
+			if ( ! preg_match( '/^(?:BINARY|CHAR|DATE|DATETIME|SIGNED|UNSIGNED|TIME|DOUBLE|INTEGER|NUMERIC(?:\(\d+(?:,\s?\d+)?\))?|DECIMAL(?:\(\d+(?:,\s?\d+)?\))?)$/', $type ) ) {
+				return 'CHAR';
+			}
+
+			if ( 'INTEGER' === $type || 'NUMERIC' === $type ) {
+				$type = 'SIGNED';
+			}
+
+			if ( 'DOUBLE' === $type ) {
+				$type = 'DECIMAL';
+			}
+
+			return $type;
 		}
 
 		/**
