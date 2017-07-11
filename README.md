@@ -13,7 +13,7 @@ Sandhills Development, LLC © 2017
 
 ## Background
 
-In Sandhills products like @AffiliateWP, @easydigitaldownloads, or @restrictcontentpro, we leverage a variety of database schema, sometimes extending core post, term, or taxonomy objects, though more often than not, custom objects.
+In Sandhills products like [https://affiliatewp.com](AffiliateWP), [https://easydigitaldownloads.com](Easy Digital Downloads), or [https://restrictcontentpro.com](Restrict Content Pro), we leverage a variety of database schema, sometimes extending core post, term, or taxonomy objects, though more often than not, custom objects.
 
 Because of this, we've experienced an ever growing need to build (sometimes very complex) `WHERE` clauses in order to make information about those custom objects easily queryable.
 
