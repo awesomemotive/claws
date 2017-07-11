@@ -6,6 +6,9 @@
 
 Claws is a library for building standardized SQL clauses used in custom [WordPress](https://wordpress.org/) database queries.
 
+* **Version**: Beta – this is not (yet) stable software, please don't use in production environments
+* **Stable**: n/a
+
 Sandhills Development, LLC © 2017
 
 ## Background
