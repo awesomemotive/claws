@@ -83,7 +83,7 @@ $where = $claws->get_sql();
 
 ```
 
-In our case, the persistence of each Claws instance is ideal for `get_*` type queries that may accept a variety of arguments we need to build into a fairly complex query at the other via `wpdb`.
+In our case, the persistence of each Claws instance is ideal for `get_*` type queries that may accept a variety of arguments we need to build into a fairly complex query, retrievable at the other end to be fed to via `wpdb`.
 
 Methods are also chainable, which allows a more logical flow of clause building.
 
