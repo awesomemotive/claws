@@ -23,9 +23,8 @@ namespace Sandhills {
 		/**
 		 * Claws version.
 		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    string
+		 * @since 1.0.0
+		 * @var   string
 		 */
 		private $version = '1.0.0-beta';
 
@@ -34,36 +33,32 @@ namespace Sandhills {
 		 *
 		 * Resets at the end of escape_input().
 		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    string
+		 * @since 1.0.0
+		 * @var   string
 		 */
 		private $current_clause;
 
 		/**
 		 * Represents the current field(s) being worked with.
 		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    string
+		 * @since 1.0.0
+		 * @var   string
 		 */
 		private $current_field;
 
 		/**
 		 * Used for carrying the operator between methods when doing complex operations.
 		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    string
+		 * @since 1.0.0
+		 * @var   string
 		 */
 		private $current_operator;
 
 		/**
 		 * Stores clauses in progress for retrieval.
 		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    array
+		 * @since 1.0.0
+		 * @var   array
 		 */
 		private $clauses_in_progress = array();
 
@@ -73,9 +68,8 @@ namespace Sandhills {
 		 * Used when chaining multiple comparisons of different fields together
 		 * in the same phrase.
 		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    bool
+		 * @since 1.0.0
+		 * @var   bool
 		 */
 		private $amending_previous = false;
 
@@ -84,28 +78,25 @@ namespace Sandhills {
 		 *
 		 * Used in complex phrase-building.
 		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    string
+		 * @since 1.0.0
+		 * @var   string
 		 */
 		private $previous_phrase;
 
 		/**
 		 * Whitelist of clauses Claws is built to handle.
 		 *
-		 * @access private
-		 * @since  1.0.0
-		 * @var    array
+		 * @since 1.0.0
+		 * @var   array
 		 */
 		private $allowed_clauses = array( 'where' );
 
 		/**
 		 * Retrieves the current Claws version.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
-		 * @return string
+		 * @return string Version string.
 		 */
 		public function version() {
 			return $this->version;
@@ -114,8 +105,7 @@ namespace Sandhills {
 		/**
 		 * Handles calling pseudo-methods.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string $name Method name.
 		 * @param array  $args Method arguments.
@@ -153,8 +143,7 @@ namespace Sandhills {
 		/**
 		 * Builds a section of the WHERE clause.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Single value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
@@ -183,8 +172,7 @@ namespace Sandhills {
 		/**
 		 * Handles delegating short-hand value comparison phrases.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string           $type     Type of comparison. Accepts '=', '!=', '<', '>', '>=', or '<='.
 		 * @param string|int|array $values   Single value(s) of varying type, or an array of values.
@@ -225,8 +213,7 @@ namespace Sandhills {
 		/**
 		 * Handles '=' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -247,8 +234,7 @@ namespace Sandhills {
 		/**
 		 * Handles '!=' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -269,8 +255,7 @@ namespace Sandhills {
 		/**
 		 * Handles '>' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -291,8 +276,7 @@ namespace Sandhills {
 		/**
 		 * Handles '<' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -313,8 +297,7 @@ namespace Sandhills {
 		/**
 		 * Handles '>=' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -335,8 +318,7 @@ namespace Sandhills {
 		/**
 		 * Handles '<=' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -357,8 +339,7 @@ namespace Sandhills {
 		/**
 		 * Handles 'LIKE' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -379,8 +360,7 @@ namespace Sandhills {
 		/**
 		 * Handles 'NOT LIKE' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -401,8 +381,7 @@ namespace Sandhills {
 		/**
 		 * Handles 'IN' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -430,8 +409,7 @@ namespace Sandhills {
 		/**
 		 * Handles 'NOT IN' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -463,8 +441,7 @@ namespace Sandhills {
 		 * the beginning and ending dates represent the beginning and/or end of the day
 		 * including hours, minutes, and seconds, depending on the expected range.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param array           $values           Array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -483,8 +460,7 @@ namespace Sandhills {
 		/**
 		 * Handles 'NOT BETWEEN' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -503,8 +479,7 @@ namespace Sandhills {
 		/**
 		 * Handles 'EXISTS' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed           $values           Value of varying types, or array of values.
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
@@ -521,8 +496,7 @@ namespace Sandhills {
 		/**
 		 * Handles 'NOT EXISTS' value comparison.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string|callable $callback_or_type Optional. Sanitization callback to pass values through, or shorthand
 		 *                                          types to use preset callbacks. Default 'esc_sql'.
@@ -542,8 +516,7 @@ namespace Sandhills {
 		/**
 		 * Helper used by direct comparison methods to build SQL.
 		 *
-		 * @access protected
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param array            $values           Array of values to compare.
 		 * @param string|callable  $callback_or_type Sanitization callback to pass values through, or shorthand
@@ -572,8 +545,7 @@ namespace Sandhills {
 		/**
 		 * Builds and retrieves the actual comparison SQL.
 		 *
-		 * @acccess protected
-		 * @since   1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param array  $values       Array of values.
 		 * @param string $compare_type Comparison type to make. Accepts '=', '!=', '<', '>', '<=', or '>='.
@@ -618,8 +590,7 @@ namespace Sandhills {
 		/**
 		 * Helper used by 'in' comparison methods to build SQL.
 		 *
-		 * @access protected
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param array           $values           Array of values to compare.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
@@ -657,8 +628,7 @@ namespace Sandhills {
 		/**
 		 * Helper used by 'LIKE' comparison methods to build SQL.
 		 *
-		 * @access protected
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param array           $values           Array of values to compare.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
@@ -700,8 +670,7 @@ namespace Sandhills {
 		/**
 		 * Helper used by 'BETWEEN' comparison methods to build SQL.
 		 *
-		 * @access protected
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param array           $values           Array of values to compare.
 		 * @param string|callable $callback_or_type Sanitization callback to pass values through, or shorthand
@@ -751,8 +720,7 @@ namespace Sandhills {
 		/**
 		 * Retrieves the callback to use for the given type.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string|callable $callback_or_type Standard type to retrieve a callback for, or an callback.
 		 * @return callable Callback.
@@ -776,8 +744,7 @@ namespace Sandhills {
 		/**
 		 * Determines the right callback for a given type of value.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string $type Type of value to retrieve a callback for.
 		 * @return string|callable Callback string.
@@ -818,8 +785,7 @@ namespace Sandhills {
 		/**
 		 * Retrieves the CAST value for a given value type.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @see WP_Meta_Query::get_cast_for_type()
 		 *
@@ -847,8 +813,7 @@ namespace Sandhills {
 		/**
 		 * Validates and retrieves the operator.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string $operator Operator. Accepts 'OR' or 'AND'.
 		 * @return string Operator. 'OR' if an invalid operator is passed to `$operator`.
@@ -866,8 +831,7 @@ namespace Sandhills {
 		/**
 		 * Escapes a value used in a 'LIKE' comparison.
 		 *
-		 * @access protected
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param mixed $like LIKE comparison value.
 		 * @return string Escaped value.
@@ -881,11 +845,9 @@ namespace Sandhills {
 		 *
 		 * Seems silly, but anywhere blatant duplication can be reduced is a win.
 		 *
-		 * @access protected
-		 * @since  1.0.0
-		 * @param $values
+		 * @since 1.0.0
 		 *
-		 * @param mixed|array Single values of varying type or an array of values.
+		 * @param mixed|array $values Single values of varying type or an array of values.
 		 * @return array Array of values.
 		 */
 		protected function prepare_values( $values ) {
@@ -895,8 +857,7 @@ namespace Sandhills {
 		/**
 		 * Replaces the previous phrase with the given prepared SQL.
 		 *
-		 * @access protected
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string      $sql    Prepared SQL to replace the phrase with.
 		 * @param null|string $clause Optional. Clause to replace the last phrase for. Default is the current clause.
@@ -914,8 +875,7 @@ namespace Sandhills {
 		/**
 		 * Adds prepared SQL to the current clause.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string      $sql    Prepared SQL to add to the clause.
 		 * @param null|string $clause Optional. Clause to add the SQL to. Default is the current clause.
@@ -944,8 +904,7 @@ namespace Sandhills {
 		/**
 		 * Retrieves raw, sanitized SQL for the current clause.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param null|string $clause     Optional. Clause to build SQL for. Default is the current clause.
 		 * @param bool        $reset_vars Optional. Whether to reset the clause, field, and operator vars
@@ -981,8 +940,7 @@ namespace Sandhills {
 		/**
 		 * Sets the current clause.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string $clause Clause to set as current.
 		 * @return \Sandhills\Claws Current claws instance.
@@ -1000,8 +958,7 @@ namespace Sandhills {
 		/**
 		 * Retrieves the current clause.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param null|string $clause Optional. Clause to retrieve. Default is the current clause.
 		 * @return string Current clause name.
@@ -1017,8 +974,7 @@ namespace Sandhills {
 		/**
 		 * Sets the current field.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string $field Field to set as current.
 		 * @return \Sandhills\Claws Current claws instance.
@@ -1034,8 +990,7 @@ namespace Sandhills {
 		/**
 		 * Retrieves the current field name.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @return string Current field name.
 		 */
@@ -1046,8 +1001,7 @@ namespace Sandhills {
 		/**
 		 * Sets the current operator for use in complex phrase building.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param string $operator Operator to persist between method calls. Accepts 'OR' or 'AND'.
 		 * @return \Sandhills\Claws Current claws instance.
@@ -1063,8 +1017,7 @@ namespace Sandhills {
 		/**
 		 * Flags the previously-stored phrase to be amended and appended with the given operator.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @param null|string $clause Optional. Clause to amend the previous chunk for.
 		 *                            Default is the current clause.
@@ -1093,8 +1046,7 @@ namespace Sandhills {
 		/**
 		 * Retrieves the current operator (for use in complex phrase building).
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @return string Current operator.
 		 */
@@ -1105,8 +1057,7 @@ namespace Sandhills {
 		/**
 		 * Retrieves the previous phrase for the given clause.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 *
 		 * @return string Previous phrase SQL.
 		 */
@@ -1117,8 +1068,7 @@ namespace Sandhills {
 		/**
 		 * Resets the current clause, field, and operator.
 		 *
-		 * @access public
-		 * @since  1.0.0
+		 * @since 1.0.0
 		 */
 		public function reset_vars() {
 			$this->current_clause = null;
