@@ -96,7 +96,10 @@ Methods are also chainable, which allows a more logical flow of clause building.
 For instance, taking the first example, the entire thing could be chained for a one-line expression:
 
 ```
-$where = claws()->where( 'post_title' )->like( 'foo' )->get_sql();
+$where = claws()->where( 'post_title' )
+		->like( 'foo' )
+		->get_sql();
+
 // WHERE `post_title` LIKE '%%foo%%'
 
 ```
@@ -107,7 +110,10 @@ $title_searches = array(
 	'foo', 'bar'
 );
 
-$where = claws()->where( 'post_title' )->like( $title_searches )->get_sql();
+$where = claws()->where( 'post_title' )
+		->like( $title_searches )
+		->get_sql();
+
 // WHERE `post_title` LIKE '%%foo%%' OR `post_title` LIKE '%%bar%%' 
 ```
 
@@ -115,20 +121,29 @@ $where = claws()->where( 'post_title' )->like( $title_searches )->get_sql();
 
 Outside of each of the top-level comparison methods, there's also a shorthand method of doing '=', '!=', '<', '>', '>=', '<=' comparisons using the `where()` method:
 ```
-$where = claws()->where( 'post_id', '=', 1, 'int' )->get_sql();
+$where = claws()->where( 'post_id', '=', 1, 'int' )
+		->get_sql();
+
 // WHERE `post_id` = 1
 ```
 
 To compare multiple fields with multiple values, the "current field" value must be reset using `where( $field )`:
 
 ```
-$where = claws()->where( 'post_id' )->equals( 1, 'int' )->where( 'post_title' )->like( 'foo' )->get_sql();
+$where = claws()->where( 'post_id' )->equals( 1, 'int' )
+		->where( 'post_title' )->like( 'foo' )
+		->get_sql();
+
 // WHERE `post_id` = 1 AND `post_title` LIKE '%%foo%%'
 ```
 
 To compare multiple fields with `OR` instead of `AND`, a special `or()` method should be used between the comparisons:
 ```
-$where = claws()->where( 'post_id' )->equals( 1, 'int' )->or()->where( 'post_title' )->like( 'foo' )->get_sql();
+$where = claws()->where( 'post_id' )->equals( 1, 'int' )
+		->or()
+		->where( 'post_title' )->like( 'foo' )
+		->get_sql();
+
 // WHERE `post_id` = 1 OR `post_title` LIKE '%%foo%%'
 ```
 
