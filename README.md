@@ -92,7 +92,7 @@ We've found the persistence of each Claws instance is ideal for `get_*` type que
 
 Methods are also chainable, which allows a more logical flow of clause building.
 
-For instance, taking the first example, the entire thing could be chained for a one complete expression:
+For instance, taking the first example, the entire thing could be chained for one complete expression:
 
 ```
 $where = claws()->where( 'post_title' )
