@@ -17,7 +17,7 @@ In Sandhills products like [AffiliateWP](https://affiliatewp.com), [Easy Digital
 
 Because of this, we've experienced an ever growing need to build (sometimes very complex) `WHERE` clauses in order to make information about those custom objects easily queryable.
 
-Claws was born out that need – to create a consistent, secure system under which to generate SQL with maintenance overhead shared among the products. And also because we wanted to DRY up our query code :-) 
+Claws was born out that need – to create a consistent, secure system under which to generate SQL with maintenance overhead shared among the products. And also because we wanted to eventually DRY up our query code :-)
 
 # How to use Claws
  
