@@ -136,7 +136,7 @@ $where = claws()->where( 'post_id' )->equals( 1, 'int' )
 // WHERE `post_id` = 1 AND `post_title` LIKE '%%foo%%'
 ```
 
-To compare multiple fields with where either condition could match, a special `or()` method should be used between the comparisons:
+To compare multiple fields where either condition could match, a special `or()` method should be used between the comparisons:
 ```
 $where = claws()->where( 'post_id' )->equals( 1, 'int' )
 		->or()
