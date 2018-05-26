@@ -53,7 +53,7 @@ In addition, the following comparison methods are available at the top-level:
 * `exists()`
 * `not_exists()`
 
-These methods largely cover most comparison needs in `WHERE` clause building. In order to allow more complex clause building global `or()` and `and()` methods are also available. See **Other Ways to use Claws** more more on complex clauses.
+These methods largely cover most comparison needs in `WHERE` clause building. In order to allow more complex clause building global `or()` and `and()` methods are also available. See **Other Ways to use Claws** for more on complex clauses.
 
 ## Basic Usage
 
@@ -66,7 +66,6 @@ or with a helper in the global namespace:
 
 ```
 $claws = claws();
-
 ```
 
 Claws instances persist only in the current session and are not singletons. Meaning that you can instantiate a Claws object, add to it throughout the linear course of code execution, and then effectively "collect" the results of that work at the other end.
@@ -86,14 +85,14 @@ $where = $claws->get_sql();
 
 ```
 
-In our case, the persistence of each Claws instance is ideal for `get_*` type queries that may accept a variety of arguments we need to build into a fairly complex query, retrievable at the other end to be fed to via `wpdb`.
+We've found the persistence of each Claws instance is ideal for `get_*` type queries that may accept a variety of arguments we need to build into a fairly complex query, retrievable at the other end to be fed to via `wpdb`.
 
 
 ## Method Chaining
 
 Methods are also chainable, which allows a more logical flow of clause building.
 
-For instance, taking the first example, the entire thing could be chained for a one-line expression:
+For instance, taking the first example, the entire thing could be chained for a one complete expression:
 
 ```
 $where = claws()->where( 'post_title' )
@@ -146,6 +145,3 @@ $where = claws()->where( 'post_id' )->equals( 1, 'int' )
 
 // WHERE `post_id` = 1 OR `post_title` LIKE '%%foo%%'
 ```
-
-
-# Contributors
