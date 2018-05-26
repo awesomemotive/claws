@@ -6,7 +6,7 @@
 
 Claws is a library for building standardized SQL clauses used in custom [WordPress](https://wordpress.org/) database queries.
 
-* **Version**: Beta – this is not (yet) stable software, please don't use in production environments
+* **Version**: 1.0.0-beta – this is not (yet) stable software, please don't use in production environments
 * **Stable**: n/a
 
 Sandhills Development, LLC © 2017
@@ -29,7 +29,7 @@ At this time, Claws is minutely reliant on some core WordPress functionality, so
 
 ## Methods
 
-Claws v1.0.0 currently only provides support for building `WHERE` clauses for MySQL queries.
+Claws v1.0.0-beta currently only provides support for building `WHERE` clauses for MySQL queries.
 
 At the top-level, there a few methods of note:
  
