@@ -5,6 +5,7 @@
  * @package   Sandhills\Claws
  * @copyright Copyright (c) 2018, Sandhills Development, LLC
  * @license   http://opensource.org/licenses/gpl-2.0.php GNU Public License
+ * @author    Drew Jaynes
  * @version   1.0.0-beta
  */
 namespace Sandhills {
