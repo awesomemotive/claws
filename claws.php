@@ -638,6 +638,7 @@ namespace Sandhills {
 		 * @return string Raw, sanitized SQL.
 		 */
 		protected function get_like_sql( $values, $callback_or_type, $compare_type, $operator ) {
+			global $wpdb;
 			$sql = '';
 
 			$callback     = $this->get_callback( $callback_or_type );
